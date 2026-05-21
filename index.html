@@ -3,388 +3,1204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Ultron Trading Solutions & Giftedly - Professional POS System</title>
+    <title>POS | Ultron · Giftedly</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
-        body.ultron-mode { background: linear-gradient(135deg, #1e2a2e 0%, #2c3e3f 50%, #1a2528 100%); }
-        body.giftedly-mode { background: linear-gradient(135deg, #0d9488 0%, #14b8a6 50%, #0f766e 100%); }
-        .login-container { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
-        .login-box { background: rgba(255,255,255,0.98); padding: 40px; border-radius: 28px; width: 440px; }
-        .login-box h2 { text-align: center; color: #1e293b; margin-bottom: 28px; }
-        .business-selector { margin-bottom: 24px; display: flex; gap: 15px; }
-        .business-selector label { flex: 1; padding: 12px; border: 2px solid #e2e8f0; border-radius: 16px; cursor: pointer; text-align: center; background: white; }
-        .login-box input { width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 16px; }
-        .login-box button { width: 100%; padding: 14px; background: #0d9488; color: white; border: none; border-radius: 16px; cursor: pointer; }
-        .status-box { margin-top: 20px; padding: 12px; background: #f1f5f9; border-radius: 12px; font-size: 12px; text-align: center; }
-        .pos-system { display: none; min-height: 100vh; }
+        body { font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; min-height: 100vh; background: #0f172a; }
+        
+        body.ultron-mode {
+            --primary: #dc2626;
+            --primary-dark: #b91c1c;
+            --primary-light: #ef4444;
+            --primary-soft: #7f1d1d;
+            --gradient-start: #dc2626;
+            --gradient-end: #991b1b;
+            --bg-card: #1e293b;
+            --bg-page: #0f172a;
+            --text-light: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+        
+        body.giftedly-mode {
+            --primary: #1E90FF;
+            --primary-dark: #187bcd;
+            --primary-light: #4da6ff;
+            --primary-soft: #1e3a5f;
+            --gradient-start: #1E90FF;
+            --gradient-end: #0066cc;
+            --bg-card: #1e293b;
+            --bg-page: #0f172a;
+            --text-light: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+        
+        body { background: var(--bg-page); }
+        .login-container { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: linear-gradient(135deg, #0b2b26 0%, #1a4a42 100%); }
+        .login-box { background: #1e293b; padding: 32px 28px; border-radius: 28px; width: 420px; box-shadow: 0 20px 35px -10px rgba(0,0,0,0.3); }
+        .login-box h2 { font-size: 1.8rem; font-weight: 600; color: white; margin-bottom: 1.5rem; text-align: center; }
+        .business-selector { display: flex; gap: 16px; margin-bottom: 24px; background: #0f172a; padding: 6px; border-radius: 60px; }
+        .business-selector label { flex:1; text-align: center; padding: 10px; border-radius: 40px; font-weight: 500; cursor: pointer; background: #1e293b; transition: 0.2s; border:1px solid #334155; display: flex; align-items: center; justify-content: center; gap: 6px; color: white; }
+        .business-selector input { margin: 0; }
+        .login-box input { width: 100%; padding: 14px 16px; border-radius: 20px; border: 1px solid #334155; margin-bottom: 16px; font-size: 0.95rem; background: #0f172a; color: white; }
+        .login-box input::placeholder { color: #64748b; }
+        .login-box button { background: var(--primary); width: 100%; padding: 14px; border-radius: 40px; font-weight: 700; font-size: 1rem; border: none; color: white; cursor: pointer; transition: 0.2s; }
+        .login-box button:hover { background: var(--primary-dark); }
+        .status-box { background: #0f172a; border-radius: 20px; padding: 10px; font-size: 12px; text-align: center; margin-top: 20px; color: #94a3b8; }
+        
+        .pos-system { display: none; background: var(--bg-page); min-height: 100vh; }
         .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-        .header { background: rgba(255,255,255,0.97); border-radius: 24px; padding: 20px 32px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-        .logo { display: flex; align-items: center; gap: 16px; }
-        .logo-img { width: 52px; height: 52px; border-radius: 14px; }
-        .logo h1 { font-size: 24px; background: linear-gradient(135deg, #0d9488, #0f766e); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .user-info button { margin-top: 8px; padding: 8px 20px; background: #ef4444; color: white; border: none; border-radius: 40px; cursor: pointer; }
-        .tab-bar { background: rgba(255,255,255,0.97); border-radius: 60px; margin-bottom: 24px; display: flex; overflow-x: auto; padding: 6px; gap: 6px; }
-        .tab { padding: 12px 24px; background: transparent; border: none; cursor: pointer; font-weight: 600; border-radius: 40px; color: #334155; }
-        .tab.active { background: #0d9488; color: white; }
-        .tab-content { display: none; background: rgba(255,255,255,0.97); border-radius: 28px; padding: 32px; }
+        
+        .header { background: var(--bg-card); border-radius: 24px; padding: 16px 28px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid #334155; }
+        .logo { display: flex; align-items: center; gap: 14px; }
+        .logo-img { width: 48px; height: 48px; border-radius: 14px; object-fit: cover; background: #334155; }
+        .logo h1 { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        .user-info { display: flex; align-items: center; gap: 20px; color: var(--text-light); }
+        .user-info button { background: #ef4444; padding: 8px 20px; border-radius: 40px; border: none; color: white; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: 0.2s; }
+        .user-info button:hover { background: #dc2626; }
+        
+        .tab-bar { background: var(--bg-card); border-radius: 60px; margin-bottom: 24px; display: flex; gap: 6px; padding: 8px; overflow-x: auto; flex-wrap: wrap; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid #334155; }
+        .tab { padding: 10px 24px; background: transparent; border: none; font-weight: 600; border-radius: 40px; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; transition: 0.2s; white-space: nowrap; }
+        .tab.active { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .tab:hover:not(.active) { background: var(--primary-soft); color: var(--primary); }
+        
+        .whatsapp-btn { background: #25D366; color: white; border: none; padding: 6px 14px; border-radius: 30px; font-size: 0.75rem; font-weight: 600; cursor: pointer; margin: 3px; transition: 0.2s; display: inline-flex; align-items: center; gap: 5px; }
+        .whatsapp-btn:hover { background: #128C7E; transform: scale(1.02); }
+        
+        .notification-badge { background: #ef4444; color: white; border-radius: 20px; padding: 2px 8px; font-size: 0.7rem; font-weight: bold; margin-left: 8px; }
+        
+        .tab-content { display: none; background: var(--bg-card); border-radius: 28px; padding: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid #334155; }
         .tab-content.active { display: block; }
-        .search-box { display: flex; gap: 12px; margin-bottom: 20px; }
-        .search-box input { flex: 1; padding: 14px 18px; border: 2px solid #e2e8f0; border-radius: 18px; }
-        .results-list { max-height: 380px; overflow-y: auto; border-radius: 20px; }
-        .result-item, .transaction-item, .cart-item { padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 16px; margin-bottom: 8px; background: white; cursor: pointer; transition: all 0.2s; }
-        .result-item:hover, .transaction-item:hover { background: #f8fafc; border-color: #0d9488; }
-        .investor-item { padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 16px; margin-bottom: 8px; background: white; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .subscription-item { padding: 10px 16px; border: 1px solid #e2e8f0; border-radius: 14px; margin-bottom: 8px; background: white; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; transition: all 0.2s; }
-        .subscription-item.unsubscribed { background: #fff7ed; border-left: 4px solid #f97316; opacity: 0.85; }
-        .subscription-item.overdue { background: #fef2f2; border-left: 4px solid #ef4444; }
-        .subscription-item.active { background: #f0fdf4; border-left: 4px solid #22c55e; }
-        .customer-details { background: #f8fafc; padding: 20px; border-radius: 20px; margin-bottom: 20px; }
-        .cart-items { max-height: 360px; overflow-y: auto; margin-bottom: 20px; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; cursor: default; }
-        .cart-item-info { flex: 1; cursor: pointer; }
+        
+        h3 { font-size: 1.3rem; font-weight: 600; color: var(--text-light); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--primary); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        h4 { font-size: 1rem; font-weight: 600; color: var(--text-light); margin: 16px 0 12px 0; }
+        
+        .search-box { margin-bottom: 20px; }
+        .search-box input { width: 100%; padding: 14px 18px; border-radius: 40px; border: 1px solid #334155; font-size: 0.95rem; transition: 0.2s; background: #0f172a; color: var(--text-light); }
+        .search-box input::placeholder { color: #64748b; }
+        .search-box input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,0,0,0.2); }
+        
+        .results-list, .cart-items { max-height: 420px; overflow-y: auto; }
+        .result-item, .transaction-item, .cart-item, .investor-item, .subscription-item { background: #0f172a; border: 1px solid #334155; border-radius: 18px; padding: 14px 16px; margin-bottom: 10px; transition: all 0.2s; cursor: pointer; color: var(--text-light); }
+        .result-item:hover, .transaction-item:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        
+        .cart-item { cursor: default; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .cart-item-info { flex: 2; cursor: pointer; font-weight: 500; }
         .cart-item-controls { display: flex; gap: 10px; align-items: center; }
-        .cart-item-controls button { width: 32px; height: 32px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
-        .cart-total { text-align: right; padding: 20px; background: #f8fafc; border-radius: 20px; margin-top: 20px; }
-        .grand-total { font-size: 24px; font-weight: 800; color: #0d9488; }
-        .button-group { display: flex; gap: 12px; margin-top: 20px; }
-        .btn-clear { background: #ef4444; color: white; padding: 12px; border: none; border-radius: 16px; font-weight: 600; cursor: pointer; }
-        .btn-primary { background: #0d9488; color: white; padding: 12px; border: none; border-radius: 16px; font-weight: 700; cursor: pointer; }
-        .edit-btn { background: #0d9488; color: white; border: none; padding: 4px 12px; border-radius: 30px; cursor: pointer; font-size: 12px; }
-        .delete-btn { background: #ef4444; color: white; border: none; padding: 4px 12px; border-radius: 30px; cursor: pointer; font-size: 12px; }
-        .unsubscribe-btn { background: #f97316; color: white; border: none; padding: 4px 12px; border-radius: 30px; cursor: pointer; font-size: 12px; }
-        .renew-btn { background: #0d9488; color: white; border: none; padding: 4px 12px; border-radius: 30px; cursor: pointer; font-size: 12px; }
-        .admin-only, .ultron-only-tab { display: none; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 24px; border-radius: 28px; max-width: 500px; width: 90%; }
-        .receipt-content { font-family: 'Courier New', monospace; white-space: pre-wrap; background: #f9fafb; padding: 20px; border-radius: 16px; font-size: 11px; }
-        .notification { position: fixed; top: 20px; right: 20px; background: white; padding: 12px 20px; border-radius: 50px; display: none; border-left: 4px solid #0d9488; z-index: 2000; }
-        .notification.show { display: block; animation: slideIn 0.3s ease; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
-        .num-btn { padding: 15px; font-size: 20px; font-weight: 600; border: 2px solid #e2e8f0; border-radius: 16px; background: white; cursor: pointer; }
-        .price-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; }
-        .price-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 28px; border-radius: 24px; z-index: 10000; min-width: 320px; }
-        .compact-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 12px; }
-        .profit-display { background: #e2e8f0; padding: 15px; border-radius: 12px; margin-top: 15px; }
-        .profit-display div { margin: 5px 0; font-size: 16px; }
-        .investor-detail-row { display: flex; padding: 8px 0; border-bottom: 1px solid #e2e8f0; }
-        .investor-detail-label { width: 140px; font-weight: 600; color: #334155; }
-        .investor-detail-value { flex: 1; color: #0f172a; }
-        @media (max-width: 768px) { .container { padding: 12px; } .tab { padding: 8px 16px; font-size: 12px; } .tab-content { padding: 20px; } }
+        .cart-item-controls button { width: 34px; height: 34px; border-radius: 12px; border: none; font-weight: bold; background: #1e293b; cursor: pointer; transition: 0.2s; color: var(--text-light); }
+        .cart-item-controls button:hover { background: var(--primary-soft); }
+        
+        .customer-details { background: #0f172a; border-radius: 20px; padding: 20px; margin: 20px 0; border: 1px solid #334155; color: var(--text-light); }
+        .compact-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+        
+        .btn-primary { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 40px; font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: 0.2s; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn-clear { background: #ef4444; color: white; border: none; padding: 12px 24px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-clear:hover { background: #dc2626; }
+        
+        .edit-btn, .delete-btn, .renew-btn, .unsubscribe-btn { background: #1e293b; border: 1px solid #334155; padding: 6px 16px; border-radius: 30px; font-size: 0.75rem; font-weight: 600; cursor: pointer; margin: 3px; transition: 0.2s; color: var(--text-light); }
+        .delete-btn { background: #7f1d1d; color: #fecaca; border-color: #991b1b; }
+        .edit-btn { background: #1e3a5f; color: var(--primary); border-color: var(--primary); }
+        .delete-btn:hover { background: #991b1b; }
+        .edit-btn:hover { background: var(--primary); color: white; }
+        
+        .customer-checkbox-item { display: flex; align-items: center; gap: 12px; padding: 12px; margin-bottom: 8px; background: #0f172a; border-radius: 12px; border: 1px solid #334155; }
+        .customer-checkbox-item input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary); }
+        .customer-checkbox-item label { flex: 1; cursor: pointer; color: var(--text-light); }
+        
+        .reminder-badge { background: #f59e0b; color: #1e293b; padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; margin-left: 10px; }
+        
+        .whatsapp-message-item { background: #064e3b; border-left: 3px solid #25D366; padding: 10px; margin-bottom: 8px; border-radius: 8px; }
+        .whatsapp-message-item .sender { font-weight: bold; color: #25D366; }
+        .whatsapp-message-item .time { font-size: 0.7rem; color: #94a3b8; margin-left: 10px; }
+        
+        .investor-detail-row { display: flex; padding: 10px 0; border-bottom: 1px solid #334155; }
+        .investor-detail-label { width: 140px; font-weight: 600; color: var(--primary); }
+        .investor-detail-value { flex: 1; color: var(--text-light); }
+        
+        .vip-date-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-card); border-radius: 28px; padding: 28px; width: 380px; border: 1px solid #334155; z-index: 10001; }
+        
+        @media (max-width: 768px) { .tab { padding: 6px 14px; font-size: 0.75rem; } .container { padding: 12px; } .cart-item { flex-direction: column; align-items: flex-start; } .payment-card { padding: 20px; } .payment-amount-display .amount { font-size: 2.2rem; } }
+        
+        .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: var(--primary); animation: spin 1s ease-in-out infinite; margin-left: 10px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body id="mainBody">
-    <div id="loginPage" class="login-container">
-        <div class="login-box">
-            <h2>⚡ POS System</h2>
-            <div class="business-selector"><label><input type="radio" name="business" value="ultron" checked> 🏢 Ultron Trading</label><label><input type="radio" name="business" value="giftedly"> 🎁 Giftedly</label></div>
-            <input type="text" id="loginUsername" placeholder="Username" value="DawidAdmin">
-            <input type="password" id="loginPassword" placeholder="Password" value="Sh@rlene1984">
-            <button id="loginBtn">Login →</button>
-            <div class="status-box" id="statusBox">Connecting...</div>
+<div id="loginPage" class="login-container">
+    <div class="login-box">
+        <h2>⚡ POS Terminal</h2>
+        <div class="business-selector">
+            <label><input type="radio" name="business" value="ultron" checked> 🔴 Ultron Trading</label>
+            <label><input type="radio" name="business" value="giftedly"> 🔵 Giftedly</label>
+        </div>
+        <input type="text" id="loginUsername" placeholder="Username" value="DawidAdmin">
+        <input type="password" id="loginPassword" placeholder="Password" value="Sh@rlene1984">
+        <button id="loginBtn">Login →</button>
+        <div class="status-box" id="statusBox">Ready • secure POS</div>
+    </div>
+</div>
+<div id="posSystem" class="pos-system">
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img id="businessIcon" class="logo-img" src="">
+                <div><h1 id="businessName">Ultron Trading</h1></div>
+            </div>
+            <div class="user-info">
+                <div id="userRoleDisplay"></div>
+                <button id="logoutBtn">Logout</button>
+            </div>
+        </div>
+        <div class="tab-bar">
+            <button class="tab active" data-tab="new-sale">🛒 Sale</button>
+            <button class="tab" data-tab="transactions">📋 History</button>
+            <button class="tab ultron-only-tab" data-tab="vip-subscriptions">👑 VIP</button>
+            <button class="tab" data-tab="customer-profile">👥 Customers <span id="whatsappBadge" class="notification-badge" style="display:none;">0</span></button>
+            <button class="tab" data-tab="new-customer">➕ New Cust</button>
+            <button class="tab" data-tab="search-product">📦 Products</button>
+            <button class="tab ultron-only-tab admin-only" data-tab="payroll">💰 Investors</button>
+            <button class="tab admin-only" data-tab="admin-panel">🔧 Admin</button>
+        </div>
+        
+        <div id="new-sale" class="tab-content active">
+            <div id="saleCustomerSection">
+                <h3>👤 Select customer</h3>
+                <div class="search-box"><input type="text" id="saleCustomerSearch" placeholder="Search by name or phone number..."></div>
+                <div id="saleCustomerResults" class="results-list"></div>
+            </div>
+            <div id="saleProductsSection" style="display:none;">
+                <div id="currentCustomerInfo" class="customer-details"></div>
+                <h3>🛍️ Add products</h3>
+                <div class="search-box"><input type="text" id="saleProductSearch" placeholder="Search by SKU or product name..."></div>
+                <div id="saleProductResults" class="results-list"></div>
+                <h3>🛒 Shopping Cart</h3>
+                <div id="cartItems" class="cart-items"></div>
+                <div class="cart-total">
+                    <div>Subtotal (excl. VAT): R<span id="subtotalExcl">0.00</span></div>
+                    <div>VAT (15%): R<span id="vatAmount">0.00</span></div>
+                    <div class="grand-total">Total Amount: R<span id="grandTotal">0.00</span></div>
+                    <div class="button-group" style="display:flex; gap:15px; margin-top:20px;">
+                        <button id="clearSaleBtn" class="btn-clear">Clear Cart</button>
+                        <button id="proceedToTenderBtn" class="btn-primary">Proceed →</button>
+                    </div>
+                </div>
+            </div>
+            <div id="salePaymentSection" style="display:none;">
+                <div class="payment-card" style="background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%); border-radius: 28px; padding: 32px; color: white;">
+                    <div class="payment-amount-display" style="text-align: center; margin-bottom: 28px;">
+                        <div class="label" style="font-size:0.9rem; opacity:0.85;">TOTAL DUE</div>
+                        <div class="amount" id="tenderTotalDisplay" style="font-size:3rem; font-weight:800;">R0.00</div>
+                    </div>
+                    <div class="payment-input-wrapper" style="background:rgba(255,255,255,0.2); border-radius:60px; padding:4px; margin-bottom:24px;">
+                        <input type="number" id="paymentAmount" step="0.01" placeholder="Enter amount received" style="width:100%; padding:18px 24px; font-size:1.5rem; border:none; border-radius:60px; text-align:center; background:white; color:#1e293b;">
+                    </div>
+                    <div class="payment-methods" style="display:flex; gap:14px; margin-bottom:24px;">
+                        <button class="method-btn" data-method="Cash" style="flex:1; padding:12px; border-radius:60px; border:2px solid rgba(255,255,255,0.3); background:transparent; color:white; font-weight:600; cursor:pointer;">💵 Cash</button>
+                        <button class="method-btn" data-method="Card" style="flex:1; padding:12px; border-radius:60px; border:2px solid rgba(255,255,255,0.3); background:transparent; color:white; font-weight:600; cursor:pointer;">💳 Card</button>
+                        <button class="method-btn" data-method="EFT" style="flex:1; padding:12px; border-radius:60px; border:2px solid rgba(255,255,255,0.3); background:transparent; color:white; font-weight:600; cursor:pointer;">🏦 EFT</button>
+                    </div>
+                    <div id="bankField" style="display:none; margin-bottom:20px;">
+                        <select id="bankName" style="width:100%; padding:12px; border-radius:40px;">
+                            <option>Capitec</option><option>FNB</option><option>Standard Bank</option><option>Nedbank</option>
+                        </select>
+                    </div>
+                    <div class="change-display" style="background:rgba(0,0,0,0.2); border-radius:20px; padding:18px; text-align:center; margin-bottom:24px;">
+                        <div class="label" style="font-size:0.8rem; opacity:0.8;">CHANGE</div>
+                        <div class="change-amount" id="tenderChangeAmount" style="font-size:2rem; font-weight:800;">R0.00</div>
+                    </div>
+                    <div class="payment-actions" style="display:flex; gap:14px;">
+                        <button id="completeTenderBtn" class="btn-primary" style="flex:1; padding:14px; border-radius:60px; font-weight:700; background:white; color:var(--primary);">✓ Complete Sale</button>
+                        <button id="backToCartBtn" class="btn-clear" style="flex:1; padding:14px; border-radius:60px; font-weight:700;">← Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="transactions" class="tab-content">
+            <h3>📜 Transaction History</h3>
+            <div class="compact-row">
+                <input type="date" id="filterDateFrom">
+                <input type="date" id="filterDateTo">
+                <select id="filterPaymentMethod"><option value="">All</option><option>Cash</option><option>Card</option><option>EFT</option></select>
+                <button id="applyFilterBtn" class="edit-btn">Filter</button>
+                <button id="clearFilterBtn" class="delete-btn">Clear</button>
+            </div>
+            <div id="transactionResults" class="results-list"></div>
+        </div>
+        
+        <div id="vip-subscriptions" class="tab-content">
+            <h3>👑 VIP Memberships <button id="whatsappBroadcastBtn" class="whatsapp-btn">📱 WhatsApp Reminders</button></h3>
+            <div class="compact-row">
+                <input type="date" id="vipDateFrom">
+                <input type="date" id="vipDateTo">
+                <input type="text" id="subscriptionSearch" placeholder="Search">
+                <select id="subscriptionFilter"><option value="all">All</option><option value="active">Active</option><option value="overdue">Overdue</option><option value="unsubscribed">Unsubscribed</option></select>
+                <button id="applyVipFilterBtn" class="edit-btn">Filter</button>
+                <button id="clearVipFilterBtn" class="delete-btn">Clear</button>
+            </div>
+            <div id="subscriptionList" class="results-list"></div>
+        </div>
+        
+        <div id="customer-profile" class="tab-content">
+            <h3>👤 Customer Management <button id="whatsappBroadcastCustomerBtn" class="whatsapp-btn">📱 Broadcast</button></h3>
+            <div class="search-box"><input type="text" id="customerSearchInput" placeholder="Search customers..."></div>
+            <div id="whatsappMessagesSection" style="margin-bottom: 20px; display: none;">
+                <h4>📨 WhatsApp Messages <span id="unreadCount" class="notification-badge">0</span></h4>
+                <div id="whatsappMessagesList" class="results-list" style="max-height: 200px;"></div>
+            </div>
+            <div id="customerSearchResults" class="results-list"></div>
+            <div id="customerViewDetails" style="display:none;">
+                <div id="viewCustomerInfo" class="customer-details"></div>
+                <div id="editCustomerForm" style="display:none; margin-top:15px;">
+                    <input type="text" id="editName" style="width:100%; margin-bottom:10px;">
+                    <input type="text" id="editPhone" style="width:100%; margin-bottom:10px;">
+                    <input type="email" id="editEmail" style="width:100%; margin-bottom:10px;">
+                    <input type="text" id="editIdNumber" style="width:100%; margin-bottom:10px;">
+                    <input type="date" id="editSinceDate" style="width:100%; margin-bottom:10px;">
+                    <div style="display:flex; gap:12px;">
+                        <button id="saveEditBtn" class="btn-primary">Save</button>
+                        <button id="cancelEditBtn" class="btn-clear">Cancel</button>
+                    </div>
+                </div>
+                <button id="showEditFormBtn" class="edit-btn">✏️ Edit</button>
+                <button id="deleteCustomerBtn" class="delete-btn">🗑️ Delete</button>
+                <h4>Purchase History</h4>
+                <div id="customerHistoryList" class="results-list"></div>
+                <h4>VIP Subscriptions</h4>
+                <div id="customerSubscriptionsList" class="results-list"></div>
+            </div>
+        </div>
+        
+        <div id="broadcastModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); align-items:center; justify-content:center; z-index:10000;">
+            <div style="background:var(--bg-card); border-radius:28px; padding:28px; max-width:600px; width:90%; border:1px solid #334155;">
+                <h3 style="color:var(--primary);">📱 Broadcast Message</h3>
+                <div style="max-height:400px; overflow-y:auto; margin-bottom:20px;">
+                    <div id="customerChecklist"></div>
+                </div>
+                <div class="compact-row" style="margin-bottom:12px;">
+                    <button id="selectAllBtn" class="edit-btn">Select All</button>
+                    <button id="deselectAllBtn" class="edit-btn">Deselect All</button>
+                </div>
+                <textarea id="broadcastMessage" rows="4" style="width:100%; margin-bottom:12px; border-radius:16px; padding:12px;"></textarea>
+                <div style="display:flex; gap:12px;">
+                    <button id="sendBroadcastBtn" class="btn-primary">Send</button>
+                    <button id="closeBroadcastBtn" class="btn-clear">Cancel</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="new-customer" class="tab-content">
+            <h3>➕ Register Customer</h3>
+            <input type="text" id="newCustomerName" placeholder="Full Name *" style="width:100%; margin-bottom:12px;">
+            <input type="text" id="newCustomerPhone" placeholder="Phone Number *" style="width:100%; margin-bottom:12px;">
+            <input type="email" id="newCustomerEmail" placeholder="Email" style="width:100%; margin-bottom:12px;">
+            <input type="text" id="newCustomerIdNumber" placeholder="ID Number" style="width:100%; margin-bottom:12px;">
+            <input type="date" id="newCustomerSince" style="width:100%; margin-bottom:12px;">
+            <button id="createCustomerBtn" class="btn-primary">Create</button>
+        </div>
+        
+        <div id="search-product" class="tab-content">
+            <h3>📦 Product Catalog</h3>
+            <div class="search-box"><input type="text" id="productSearchInput" placeholder="Search..."></div>
+            <div id="productSearchResults" class="results-list"></div>
+        </div>
+        
+        <div id="payroll" class="tab-content">
+            <h3>💰 Investor Management</h3>
+            <div class="compact-row">
+                <button id="payrollEmployeesTab" class="edit-btn">👥 List</button>
+                <button id="payrollRunTab" class="edit-btn">📊 Profit Share</button>
+                <button id="investorAccountBtn" class="edit-btn">💵 USD Account</button>
+            </div>
+            <div id="payrollEmployeesSection">
+                <button id="addEmployeeBtn" class="btn-primary" style="margin-bottom:15px;">+ Add Investor</button>
+                <div id="employeeList" class="results-list"></div>
+            </div>
+            <div id="payrollRunSection" style="display:none;">
+                <div class="customer-details">
+                    <label>💰 Profit Withdrawn (R):</label>
+                    <input type="number" id="profitWithdrawn" step="0.01" oninput="calculateProfitCapital()"><br>
+                    <label>📈 Admin Commission (%):</label>
+                    <input type="number" id="adminCommissionPercent" step="0.5" oninput="calculateProfitCapital()"><br>
+                    <div><strong>Profit Capital: R<span id="profitCapital">0.00</span></strong></div>
+                    <button id="autoDistributeBtn" class="edit-btn">⚖️ Equal Distribute</button>
+                </div>
+                <div id="payrollWageList" class="results-list"></div>
+                <div class="profit-display">
+                    <div><strong>Total Share:</strong> R<span id="totalWages">0.00</span></div>
+                    <div><strong>Remaining:</strong> R<span id="remainingBalance">0.00</span></div>
+                </div>
+                <button id="runPayrollBtn" class="btn-primary">Process</button>
+            </div>
+            <div id="investorAccountSection" style="display:none;">
+                <div class="customer-details">
+                    <label>Opening Balance ($):</label>
+                    <input type="number" id="investorOpeningBalance" step="0.01" oninput="updateInvestorClosingBalance()"><br>
+                    <label>Commissions Withdrawn ($):</label>
+                    <input type="number" id="investorCommissionsWithdrawn" step="0.01" oninput="updateInvestorClosingBalance()"><br>
+                    <label>Closing Balance ($):</label>
+                    <input type="number" id="investorClosingBalance" readonly><br>
+                    <button id="saveInvestorAccountBtn" class="btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="admin-panel" class="tab-content">
+            <h3>🔧 Admin</h3>
+            <div class="customer-details">
+                <h4>Users</h4>
+                <div class="compact-row">
+                    <input type="text" id="newUsername" placeholder="Username">
+                    <input type="password" id="newPassword" placeholder="Password">
+                    <select id="newUserRole"><option>cashier</option><option>admin</option></select>
+                    <button id="createUserBtn" class="btn-primary">Create</button>
+                </div>
+                <div id="userList" class="results-list"></div>
+                <h4>Products</h4>
+                <div class="compact-row">
+                    <input type="text" id="newProductSku" placeholder="SKU">
+                    <input type="text" id="newProductDesc" placeholder="Description">
+                    <input type="number" id="newProductPrice" placeholder="Price">
+                    <button id="createProductBtn" class="btn-primary">Add</button>
+                </div>
+                <div id="productList" class="results-list"></div>
+            </div>
         </div>
     </div>
-    <div id="posSystem" class="pos-system">
-        <div class="container">
-            <div class="header"><div class="logo"><img id="businessIcon" class="logo-img" src=""><div><h1 id="businessName">Ultron Trading Solutions</h1></div></div><div class="user-info"><div id="userRoleDisplay"></div><button id="logoutBtn">Logout</button></div></div>
-            <div class="tab-bar">
-                <button class="tab active" data-tab="new-sale">🛒 Sale</button>
-                <button class="tab" data-tab="transactions">📋 Transactions</button>
-                <button class="tab ultron-only-tab" data-tab="vip-subscriptions">👑 VIP</button>
-                <button class="tab" data-tab="customer-profile">👥 Customers</button>
-                <button class="tab" data-tab="new-customer">➕ New Customer</button>
-                <button class="tab" data-tab="search-product">📦 Products</button>
-                <button class="tab ultron-only-tab admin-only" data-tab="payroll">💰 Investors</button>
-                <button class="tab admin-only" data-tab="admin-panel">🔧 Admin</button>
-            </div>
-            <div id="new-sale" class="tab-content active"><div id="saleCustomerSection"><h3>👤 Select Customer</h3><div class="search-box"><input type="text" id="saleCustomerSearch" placeholder="Search..."></div><div id="saleCustomerResults" class="results-list"></div></div><div id="saleProductsSection" style="display:none;"><div id="currentCustomerInfo" class="customer-details"></div><h3>🛍️ Add Products</h3><div class="search-box"><input type="text" id="saleProductSearch" placeholder="Search..."></div><div id="saleProductResults" class="results-list"></div><h3>🛒 Cart <span style="font-size:12px;">(Click item to override/discount)</span></h3><div id="cartItems" class="cart-items"></div><div class="cart-total"><div>Subtotal: R<span id="subtotalExcl">0.00</span></div><div>VAT 15%: R<span id="vatAmount">0.00</span></div><div class="grand-total">Total: R<span id="grandTotal">0.00</span></div></div><div class="button-group"><button id="clearSaleBtn" class="btn-clear">Clear Cart</button><button id="proceedToTenderBtn" class="btn-primary">Proceed</button></div></div><div id="salePaymentSection" style="display:none;"><h3>💳 Payment</h3><div class="customer-details"><div><strong>Customer:</strong> <span id="tenderCustomerName"></span></div><div><strong>Payment:</strong> <select id="tenderPaymentMethodSelect"><option value="Cash">Cash</option><option value="Card">Card</option><option value="EFT">EFT</option></select></div><div><strong>Total:</strong> <span id="tenderTotal" style="font-size:24px;font-weight:800;">R0.00</span></div><div><strong>Tender:</strong> <span id="tenderAmount">R0.00</span></div><div><strong>Change:</strong> <span id="tenderChange">R0.00</span></div></div><div id="bankField" style="display:none;"><select id="bankName" style="width:100%; padding:10px;"><option value="Capitec">Capitec</option><option value="FNB">FNB</option><option value="Standard Bank">Standard Bank</option></select></div><input type="number" id="paymentAmount" step="0.01" placeholder="Enter amount" style="width:100%; padding:14px; font-size:20px; border-radius:16px;"><div class="numpad" id="numpadContainer"></div><button id="completeTenderBtn" class="btn-primary" style="margin-top:16px;">✓ Complete</button><button id="backToCartBtn" class="btn-clear">← Back</button></div></div>
-            <div id="transactions" class="tab-content"><h3>📜 Transactions</h3><div class="compact-row" style="margin:16px 0;"><input type="date" id="filterDateFrom" style="padding:8px;"><input type="date" id="filterDateTo" style="padding:8px;"><select id="filterPaymentMethod" style="padding:8px;"><option value="">All</option><option value="Cash">Cash</option><option value="Card">Card</option><option value="EFT">EFT</option></select><button id="applyFilterBtn" class="edit-btn">Filter</button><button id="clearFilterBtn" class="delete-btn">Clear</button></div><div id="transactionResults" class="results-list"></div></div>
-            <div id="vip-subscriptions" class="tab-content"><h3>👑 VIP Memberships</h3><div class="compact-row" style="margin:16px 0;"><input type="date" id="vipDateFrom" placeholder="From" style="padding:8px;"><input type="date" id="vipDateTo" placeholder="To" style="padding:8px;"><input type="text" id="subscriptionSearch" placeholder="Search" style="padding:8px; width:150px;"><select id="subscriptionFilter" style="padding:8px;"><option value="all">All</option><option value="active">Active</option><option value="overdue">Overdue</option><option value="unsubscribed">Unsubscribed</option></select><button id="applyVipFilterBtn" class="edit-btn">Filter</button><button id="clearVipFilterBtn" class="delete-btn">Clear</button></div><div id="subscriptionList" class="results-list"></div></div>
-            <div id="customer-profile" class="tab-content"><h3>👤 Customer Profiles</h3><div class="search-box"><input type="text" id="customerSearchInput" placeholder="Search..."></div><div id="customerSearchResults" class="results-list"></div><div id="customerViewDetails" style="display:none;"><div id="viewCustomerInfo" class="customer-details"></div><div id="editCustomerForm" style="display:none; margin-top:12px;"><input type="text" id="editName" placeholder="Name"><input type="text" id="editPhone" placeholder="Phone"><input type="email" id="editEmail" placeholder="Email"><input type="text" id="editIdNumber" placeholder="ID Number"><input type="date" id="editSinceDate"><div style="display:flex; gap:10px; margin-top:10px;"><button id="saveEditBtn" class="btn-primary">Save</button><button id="cancelEditBtn" class="btn-clear">Cancel</button></div></div><button id="showEditFormBtn" class="edit-btn">Edit Customer</button><button id="deleteCustomerBtn" class="delete-btn" style="margin-left:8px;">Delete</button><h4 style="margin-top:16px;">Purchase History</h4><div id="customerHistoryList" class="results-list"></div><h4 style="margin-top:16px;">VIP Subscriptions</h4><div id="customerSubscriptionsList" class="results-list"></div></div></div>
-            <div id="new-customer" class="tab-content"><h3>➕ New Customer</h3><input type="text" id="newCustomerName" placeholder="Full Name *" style="width:100%; padding:12px; margin-bottom:10px;"><input type="text" id="newCustomerPhone" placeholder="Phone *" style="width:100%; padding:12px; margin-bottom:10px;"><input type="email" id="newCustomerEmail" placeholder="Email" style="width:100%; padding:12px; margin-bottom:10px;"><input type="text" id="newCustomerIdNumber" placeholder="ID Number" style="width:100%; padding:12px; margin-bottom:10px;"><input type="date" id="newCustomerSince" style="width:100%; padding:12px;"><button id="createCustomerBtn" class="btn-primary" style="margin-top:12px;">Create</button></div>
-            <div id="search-product" class="tab-content"><h3>📦 Products</h3><div class="search-box"><input type="text" id="productSearchInput" placeholder="Search..."></div><div id="productSearchResults" class="results-list"></div></div>
-            <div id="payroll" class="tab-content"><h3>💰 Investor Management</h3><div style="display:flex; gap:10px; margin-bottom:20px;"><button id="payrollEmployeesTab" class="edit-btn" style="background:#0d9488;">👥 Investors</button><button id="payrollRunTab" class="edit-btn">🏃 Profit Sharing</button><button id="investorAccountBtn" class="edit-btn" style="background:#f59e0b;">💵 USD Account</button></div>
-                <div id="payrollEmployeesSection"><h4>Investor List</h4><button id="addEmployeeBtn" class="btn-primary" style="width:auto; padding:6px 16px; margin-bottom:12px;">+ Add Investor</button><div id="employeeList" class="results-list"></div></div>
-                <div id="payrollRunSection" style="display:none;"><div class="customer-details"><div class="form-group"><label>💰 Profit Withdrawn (R):</label><input type="number" id="profitWithdrawn" step="0.01" value="0" oninput="calculateProfitCapital()"></div><div class="form-group"><label>📈 Admin Commission (%):</label><div class="compact-row"><input type="number" id="adminCommissionPercent" step="0.5" value="0" oninput="calculateProfitCapital()" style="width:100px;"><span>= R <span id="adminCommissionAmount">0.00</span></span></div></div><div class="profit-display"><strong>💰 Profit Capital Available:</strong> R<span id="profitCapital">0.00</span></div><div style="margin-top:10px;"><button id="autoDistributeBtn" class="edit-btn" style="background:#f59e0b;">⚖️ Auto-Distribute Equally</button></div></div><div id="payrollWageList" class="results-list" style="margin:15px 0;"></div><div class="profit-display"><div><strong>Total Profit Share:</strong> R<span id="totalWages">0.00</span></div><div><strong>Remaining Balance:</strong> R<span id="remainingBalance">0.00</span></div></div><button id="runPayrollBtn" class="btn-primary">Process Profit Sharing</button></div>
-                <div id="investorAccountSection" style="display:none;"><div class="customer-details"><div class="form-group"><label>🏦 Opening Balance ($):</label><input type="number" id="investorOpeningBalance" step="0.01" value="0" oninput="updateInvestorClosingBalance()"></div><div class="form-group"><label>📉 Commissions Withdrawn ($):</label><input type="number" id="investorCommissionsWithdrawn" step="0.01" value="0" oninput="updateInvestorClosingBalance()"></div><div class="form-group"><label>🏁 Closing Balance ($):</label><input type="number" id="investorClosingBalance" step="0.01" value="0" readonly style="background:#f8fafc;"></div><button id="saveInvestorAccountBtn" class="btn-primary">Save Account</button></div></div>
-            </div>
-            <div id="admin-panel" class="tab-content"><h3>🔧 Admin</h3><div class="customer-details"><h4>Users</h4><div class="compact-row"><input type="text" id="newUsername" placeholder="Username"><input type="password" id="newPassword" placeholder="Password"><select id="newUserRole"><option value="cashier">Cashier</option><option value="admin">Admin</option></select><button id="createUserBtn" class="btn-primary">Create</button></div><div id="userList" class="results-list" style="margin-top:12px;"></div></div><div class="customer-details"><h4>Products</h4><div class="compact-row"><input type="text" id="newProductSku" placeholder="SKU"><input type="text" id="newProductDesc" placeholder="Description"><input type="number" id="newProductPrice" placeholder="Price"><button id="createProductBtn" class="btn-primary">Add</button></div><div id="productList" class="results-list" style="margin-top:12px;"></div></div></div>
+</div>
+
+<div id="receiptModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); align-items:center; justify-content:center; z-index:1000;">
+    <div class="modal-content" style="background:var(--bg-card); border-radius:28px; padding:28px; max-width:500px; width:90%;">
+        <div id="receiptContent" class="receipt-content" style="background:#0f172a; padding:20px; border-radius:16px; font-family:monospace; white-space:pre-wrap;"></div>
+        <div class="compact-row" style="margin-top:20px;">
+            <button id="printReceiptBtn" class="edit-btn">Print</button>
+            <button id="closeReceiptBtn" class="delete-btn">Close</button>
         </div>
     </div>
-    <div id="receiptModal" class="modal"><div class="modal-content"><div id="receiptContent" class="receipt-content"></div><div class="compact-row"><button id="printReceiptBtn" class="edit-btn">Print</button><button id="closeReceiptBtn" class="delete-btn">Close</button></div></div></div>
-    <div id="notification" class="notification"></div>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        (function() {
-            const SUPABASE_URL = 'https://nmxiyaffapotgvaolixn.supabase.co';
-            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5teGl5YWZmYXBvdGd2YW9saXhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5NTQ0ODcsImV4cCI6MjA5NDUzMDQ4N30.uENCn-Pl8xoqvLVNg_bEi2jlFmGgTU474lEZt70Sxns';
-            let supabase, currentBusiness='ultron', currentUser, saleCustomer, customers=[], products=[], transactions=[], investors=[], subscriptions=[], investorPayments=[], cart=[];
-            const VAT=0.15;
+</div>
+<div id="notification" class="notification" style="position:fixed; top:20px; right:20px; background:var(--bg-card); padding:14px 28px; border-radius:50px; border-left:5px solid var(--primary); z-index:11000; display:none;"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+    const SUPABASE_URL='https://nmxiyaffapotgvaolixn.supabase.co';
+    const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5teGl5YWZmYXBvdGd2YW9saXhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5NTQ0ODcsImV4cCI6MjA5NDUzMDQ4N30.uENCn-Pl8xoqvLVNg_bEi2jlFmGgTU474lEZt70Sxns';
+    let supabase, currentBusiness='ultron', currentUser, saleCustomer, customers=[], products=[], transactions=[], investors=[], subscriptions=[], investorPayments=[], cart=[], whatsappMessages=[];
+    const VAT=0.15;
+    
+    const LOGOS = {
+        ultron: 'https://i.postimg.cc/Z5Y8yw2C/uts-logo-bmp.jpg',
+        giftedly: 'https://i.postimg.cc/tgrKrwwS/Whats-App-Image-2026-05-18-at-10-45-20-AM.jpg'
+    };
+    
+    // Get table name based on current business
+    function getTableName(baseTable) {
+        return `${baseTable}_${currentBusiness}`;
+    }
+    
+    function showNotification(msg){ let n=document.getElementById('notification'); n.innerHTML=msg; n.style.display='block'; setTimeout(()=>n.style.display='none',3000);}
+    
+    function formatPhoneForWhatsApp(phone) {
+        let clean = phone.replace(/\D/g, '');
+        if (clean.startsWith('0')) clean = '27' + clean.substring(1);
+        if (!clean.startsWith('27')) clean = '27' + clean;
+        return clean;
+    }
+    
+    function sendWhatsApp(phoneNumber, message) {
+        const whatsappUrl = `https://wa.me/${formatPhoneForWhatsApp(phoneNumber)}?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+    }
+    
+    async function saveWhatsAppMessage(customerName, customerPhone, message) {
+        try {
+            const tableName = getTableName('whatsapp_messages');
+            const { error } = await supabase.from(tableName).insert([{
+                customer_name: customerName,
+                customer_phone: customerPhone,
+                message: message,
+                read: false,
+                created_at: new Date().toISOString()
+            }]);
+            if(error) console.error('Error saving message:', error);
+            else await loadWhatsAppMessages();
+        } catch(e) { console.error('Save error:', e); }
+    }
+    
+    async function loadWhatsAppMessages() {
+        try {
+            const tableName = getTableName('whatsapp_messages');
+            const { data } = await supabase.from(tableName).select('*').order('created_at', { ascending: false });
+            if(data) { whatsappMessages = data; updateWhatsAppBadge(); renderWhatsAppMessages(); }
+        } catch(e) { console.error('Load messages error:', e); }
+    }
+    
+    async function markMessageRead(messageId) {
+        const tableName = getTableName('whatsapp_messages');
+        await supabase.from(tableName).update({ read: true }).eq('id', messageId);
+        await loadWhatsAppMessages();
+    }
+    
+    async function deleteWhatsAppMessage(messageId) {
+        const tableName = getTableName('whatsapp_messages');
+        await supabase.from(tableName).delete().eq('id', messageId);
+        await loadWhatsAppMessages();
+    }
+    
+    function updateWhatsAppBadge() {
+        const unreadCount = whatsappMessages.filter(m => !m.read).length;
+        const badge = document.getElementById('whatsappBadge');
+        const unreadSpan = document.getElementById('unreadCount');
+        const messagesSection = document.getElementById('whatsappMessagesSection');
+        if(unreadCount > 0) {
+            if(badge) { badge.style.display = 'inline-block'; badge.textContent = unreadCount; }
+            if(unreadSpan) unreadSpan.textContent = unreadCount;
+            if(messagesSection) messagesSection.style.display = 'block';
+        } else {
+            if(badge) badge.style.display = 'none';
+            if(unreadSpan) unreadSpan.textContent = '0';
+            if(messagesSection && (!whatsappMessages.length || whatsappMessages.every(m => m.read))) messagesSection.style.display = 'none';
+        }
+    }
+    
+    function renderWhatsAppMessages() {
+        const container = document.getElementById('whatsappMessagesList');
+        if(!container) return;
+        if(whatsappMessages.length === 0) { container.innerHTML = '<div style="padding:20px;text-align:center;">No messages</div>'; return; }
+        container.innerHTML = whatsappMessages.map(msg => `<div class="whatsapp-message-item" style="cursor:pointer;${!msg.read ? 'border-left-color:#25D366;border-left-width:4px;' : ''}">
+            <div class="sender">📱 ${msg.customer_name}</div>
+            <div class="time">${new Date(msg.created_at).toLocaleString()}</div>
+            <div>${msg.message}</div>
+            <div style="margin-top:8px;">
+                <button onclick="replyToWhatsApp('${msg.customer_phone}','${msg.customer_name}')" class="whatsapp-btn" style="font-size:0.7rem;">📱 Reply</button>
+                <button onclick="markMessageRead(${msg.id})" class="edit-btn" style="font-size:0.7rem;">✓ Mark Read</button>
+                <button onclick="deleteWhatsAppMessage(${msg.id})" class="delete-btn" style="font-size:0.7rem;">🗑️ Delete</button>
+            </div>
+        </div>`).join('');
+    }
+    
+    window.replyToWhatsApp = function(phone, name) {
+        let message = prompt(`Reply to ${name}:`, "Thank you for your message! How can we assist you?");
+        if(message) { sendWhatsApp(phone, message); showNotification(`Reply sent to ${name}`); }
+    };
+    window.markMessageRead = markMessageRead;
+    window.deleteWhatsAppMessage = deleteWhatsAppMessage;
+    
+    async function initSupabase(){ 
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); 
+        return true; 
+    }
+    
+    async function loadCustomers(){ 
+        try {
+            const tableName = getTableName('customers');
+            console.log('Loading from table:', tableName);
+            const { data, error } = await supabase
+                .from(tableName)
+                .select('*')
+                .order('name');
             
-            function showNotification(msg,type='success'){const n=document.getElementById('notification');n.innerHTML=msg;n.className='notification show '+type;setTimeout(()=>n.classList.remove('show'),3000);}
-            async function initSupabase(){try{supabase=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);await supabase.from('users').select('count',{count:'exact',head:true});return true;}catch(e){return false;}}
-            function formatDate(d){return new Date(d).toLocaleString('en-ZA');}
-            function shortReceipt(){return 'RCP'+Math.floor(10000+Math.random()*90000);}
-            function generateProfitReceipt(){return 'PRF'+Date.now()+Math.floor(Math.random()*1000);}
+            if (error) throw error;
             
-            async function loadCustomers(){const{data}=await supabase.from('customers').select('*').order('name');if(data)customers=data;}
-            async function loadProducts(){const{data}=await supabase.from('products').select('*').eq('business',currentBusiness);if(data)products=data;displayProductCatalog();if(currentUser?.role==='admin')displayAdminProducts();}
-            async function loadTransactions(){const{data}=await supabase.from('transactions').select('*').eq('business',currentBusiness).order('date',{ascending:false});if(data){transactions=data;renderTransactions();}}
-            async function loadSubscriptions(){const{data}=await supabase.from('subscriptions').select('*').eq('business',currentBusiness).order('created_at',{ascending:false});if(data){subscriptions=data;renderSubscriptions();}}
-            async function loadInvestors(){const{data}=await supabase.from('investors').select('*').eq('business',currentBusiness);if(data){investors=data;await loadInvestorPayments();renderInvestors();}}
-            async function loadInvestorPayments(){const{data}=await supabase.from('investor_payments').select('*').eq('business',currentBusiness);if(data)investorPayments=data;}
-            function getTotalPaid(i){return investorPayments.filter(p=>p.investor_id===i).reduce((s,p)=>s+p.amount,0);}
-            
-            function renderTransactions(){let filtered = [...transactions];const fromDate = document.getElementById('filterDateFrom')?.value;const toDate = document.getElementById('filterDateTo')?.value;const paymentMethod = document.getElementById('filterPaymentMethod')?.value;if(fromDate){const from = new Date(fromDate);from.setHours(0,0,0,0);filtered = filtered.filter(t => new Date(t.date) >= from);}if(toDate){const to = new Date(toDate);to.setHours(23,59,59,999);filtered = filtered.filter(t => new Date(t.date) <= to);}if(paymentMethod){if(paymentMethod === 'Cash') filtered = filtered.filter(t => t.cash_paid > 0);else if(paymentMethod === 'Card') filtered = filtered.filter(t => t.card_paid > 0);else if(paymentMethod === 'EFT') filtered = filtered.filter(t => t.eft_paid > 0);}const div = document.getElementById('transactionResults');div.innerHTML = filtered.map(t => `<div class="transaction-item" onclick="viewReceipt(${t.id})"><strong>🧾 ${t.receipt_number}</strong> | ${formatDate(t.date)} | R${t.total.toFixed(2)}</div>`).join('') || '<div>No transactions found</div>';}
-            
-            // RENEW FUNCTION - Updates the subscription with new dates
-            window.renewSubscription = async function(id) {
-                if(confirm('Renew this VIP membership? It will extend by 30 days from today.')){
-                    const today = new Date();
-                    const newRenewalDate = new Date();
-                    newRenewalDate.setMonth(newRenewalDate.getMonth() + 1);
-                    
-                    const { error } = await supabase
-                        .from('subscriptions')
-                        .update({ 
-                            date_paid: today.toISOString().split('T')[0],
-                            renewal_date: newRenewalDate.toISOString().split('T')[0],
-                            status: 'active'
-                        })
-                        .eq('id', id);
-                    
-                    if(error){
-                        console.error('Error renewing:', error);
-                        showNotification('Error renewing: ' + error.message, 'error');
-                    } else {
-                        await loadSubscriptions();
-                        showNotification('VIP membership renewed successfully! New expiry date: ' + newRenewalDate.toLocaleDateString(), 'success');
-                    }
-                }
-            };
-            
-            // UNSUBSCRIBE FUNCTION
-            window.unsubscribeSubscription = async function(id) {
-                if(confirm('Are you sure you want to unsubscribe this VIP membership? It will be marked as cancelled.')){
-                    const { error } = await supabase
-                        .from('subscriptions')
-                        .update({ status: 'unsubscribed' })
-                        .eq('id', id);
-                    
-                    if(error){
-                        console.error('Error unsubscribing:', error);
-                        showNotification('Error unsubscribing: ' + error.message, 'error');
-                    } else {
-                        await loadSubscriptions();
-                        showNotification('VIP membership unsubscribed successfully!', 'success');
-                    }
-                }
-            };
-            
-            window.delSub = async function(id) { 
-                if(confirm('Delete this subscription permanently? This cannot be undone.')){ 
-                    await supabase.from('subscriptions').delete().eq('id', id); 
-                    await loadSubscriptions(); 
-                    showNotification('Subscription deleted'); 
-                } 
-            };
-            
-            function renderSubscriptions(){
-                let f = [...subscriptions];
-                const from = document.getElementById('vipDateFrom')?.value;
-                const to = document.getElementById('vipDateTo')?.value;
-                const search = document.getElementById('subscriptionSearch')?.value.toLowerCase() || '';
-                const filter = document.getElementById('subscriptionFilter')?.value || 'all';
-                
-                if(from) f = f.filter(s => new Date(s.date_paid) >= new Date(from));
-                if(to){let e = new Date(to); e.setHours(23,59,59); f = f.filter(s => new Date(s.date_paid) <= e);}
-                if(filter === 'active') f = f.filter(s => s.status !== 'unsubscribed' && new Date(s.renewal_date) >= new Date());
-                else if(filter === 'overdue') f = f.filter(s => s.status !== 'unsubscribed' && new Date(s.renewal_date) < new Date());
-                else if(filter === 'unsubscribed') f = f.filter(s => s.status === 'unsubscribed');
-                if(search) f = f.filter(s => s.customer_name.toLowerCase().includes(search));
-                
-                // Sort: unsubscribed go to bottom
-                f.sort((a,b) => {
-                    if(a.status === 'unsubscribed' && b.status !== 'unsubscribed') return 1;
-                    if(a.status !== 'unsubscribed' && b.status === 'unsubscribed') return -1;
-                    return 0;
-                });
-                
-                const div = document.getElementById('subscriptionList');
-                div.innerHTML = f.map(s => {
-                    const isUnsubscribed = s.status === 'unsubscribed';
-                    const isOverdue = !isUnsubscribed && new Date(s.renewal_date) < new Date();
-                    let renewalDisplay = s.renewal_date ? new Date(s.renewal_date).toLocaleDateString() : 'N/A';
-                    let statusClass = '';
-                    
-                    if(isUnsubscribed){
-                        statusClass = 'unsubscribed';
-                        renewalDisplay = '❌ UNSUBSCRIBED';
-                    } else if(isOverdue){
-                        statusClass = 'overdue';
-                    } else {
-                        statusClass = 'active';
-                    }
-                    
-                    return `<div class="subscription-item ${statusClass}">
-                        <span><strong>${s.customer_name}</strong> | ${s.customer_phone} | ${s.product_name} | R${s.amount}</span>
-                        <span>
-                            <span style="font-size:11px;">Paid: ${new Date(s.date_paid).toLocaleDateString()} | Renews: ${renewalDisplay}</span>
-                            ${!isUnsubscribed ? `<button onclick="renewSubscription(${s.id})" class="renew-btn" style="margin-left:8px;">🔄 Renew</button>` : ''}
-                            ${!isUnsubscribed ? `<button onclick="unsubscribeSubscription(${s.id})" class="unsubscribe-btn" style="margin-left:4px;">❌ Unsubscribe</button>` : ''}
-                            <button onclick="delSub(${s.id})" class="delete-btn" style="margin-left:4px;">🗑️ Delete</button>
-                        </span>
-                    </div>`;
-                }).join('') || '<div style="padding:20px;text-align:center;">No subscriptions found</div>';
+            if (data && data.length > 0) {
+                customers = data;
+                console.log(`Loaded ${customers.length} customers from Supabase`);
+            } else {
+                customers = [];
+                console.log('No customers found');
             }
             
-            function displayProductCatalog(){document.getElementById('productSearchResults').innerHTML=products.map(p=>`<div class="result-item">${p.sku} - ${p.description} - R${p.price_inc_vat.toFixed(2)}</div>`).join('')||'<div>No products</div>';}
-            
-            function renderInvestors(){document.getElementById('employeeList').innerHTML=investors.map(i=>`<div class="investor-item" onclick="openInvestorDetail(${i.id})"><div><strong>${i.name}</strong><br>🏦 ${i.bank_name||'Not set'} | 🆔 ${i.id_number||'N/A'}<br>💰 Total: R${getTotalPaid(i.id).toFixed(2)}</div><button onclick="event.stopPropagation(); deleteInvestor(${i.id})" class="delete-btn">Delete</button></div>`).join('')||'<div>No investors</div>';}
-            window.deleteInvestor=async(id)=>{if(confirm('Delete investor?')){await supabase.from('investor_payments').delete().eq('investor_id',id);await supabase.from('investors').delete().eq('id',id);await loadInvestors();showNotification('Investor deleted');}};
-            
-            window.openInvestorDetail=async(id)=>{
-                const inv=investors.find(i=>i.id===id);
-                if(!inv)return;
-                const payments=investorPayments.filter(p=>p.investor_id===id);
-                const modalHtml=`<div id="invDetailModal" class="price-modal-overlay"><div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:28px;border-radius:28px;width:550px;max-height:85vh;overflow-y:auto;"><div id="invViewMode"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;"><h2 style="color:#0d9488;">👤 ${inv.name}</h2><button id="switchToEditBtn" class="btn-primary" style="padding:8px 20px;">✏️ Edit</button></div><div class="customer-details"><div class="investor-detail-row"><span class="investor-detail-label">🏦 Bank:</span><span class="investor-detail-value">${inv.bank_name||'Not set'}</span></div><div class="investor-detail-row"><span class="investor-detail-label">🔢 Account:</span><span class="investor-detail-value">${inv.account_number||'Not set'}</span></div><div class="investor-detail-row"><span class="investor-detail-label">🆔 ID:</span><span class="investor-detail-value">${inv.id_number||'Not set'}</span></div><div class="investor-detail-row"><span class="investor-detail-label">📛 Account Holder:</span><span class="investor-detail-value">${inv.account_name||'Not set'}</span></div><div class="investor-detail-row"><span class="investor-detail-label">📋 Account Type:</span><span class="investor-detail-value">${inv.account_type||'Not set'}</span></div><div class="investor-detail-row"><span class="investor-detail-label">🏛️ Branch Code:</span><span class="investor-detail-value">${inv.branch_code||'Not set'}</span></div><div class="investor-detail-row"><span class="investor-detail-label">💰 Total Received:</span><span class="investor-detail-value" style="color:#0d9488;font-weight:700;">R${getTotalPaid(id).toFixed(2)}</span></div></div><h4>📜 Profit Share History</h4><div style="max-height:250px;overflow-y:auto;margin-bottom:16px;">${payments.length?payments.map(p=>`<div class="compact-row" style="border-bottom:1px solid #e2e8f0;padding:10px;"><span>R${p.amount} | ${formatDate(p.date)} | ${p.receipt_number||'N/A'}</span><div><button onclick="printProfitReceipt(${p.id},'${inv.name}',${p.amount},'${inv.bank_name||''}','${inv.account_number||''}')" class="edit-btn">Print</button><button onclick="deletePayment(${p.id},${id})" class="delete-btn">Del</button></div></div>`).join(''):'<div style="padding:20px;text-align:center;">No history</div>'}</div><button id="closeDetailBtn" class="delete-btn">Close</button></div><div id="invEditMode" style="display:none;"><h2 style="color:#0d9488;margin-bottom:20px;">✏️ Edit Investor</h2><div class="customer-details"><div class="form-group"><label>Full Name:</label><input type="text" id="editInvName" value="${inv.name}"></div><div class="form-group"><label>Bank Name:</label><input type="text" id="editInvBank" value="${inv.bank_name||''}"></div><div class="form-group"><label>Account Number:</label><input type="text" id="editInvAccountNo" value="${inv.account_number||''}"></div><div class="form-group"><label>ID Number:</label><input type="text" id="editInvIdNo" value="${inv.id_number||''}"></div><div class="form-group"><label>Account Holder:</label><input type="text" id="editInvAccountName" value="${inv.account_name||''}"></div><div class="form-group"><label>Account Type:</label><input type="text" id="editInvAccountType" value="${inv.account_type||''}"></div><div class="form-group"><label>Branch Code:</label><input type="text" id="editInvBranchCode" value="${inv.branch_code||''}"></div></div><div style="display:flex;gap:12px;margin-top:20px;"><button id="saveInvestorEditBtn" class="btn-primary">Save</button><button id="cancelEditBtn" class="delete-btn">Cancel</button></div></div></div></div>`;
-                document.body.insertAdjacentHTML('beforeend',modalHtml);
-                document.getElementById('switchToEditBtn').onclick=()=>{document.getElementById('invViewMode').style.display='none';document.getElementById('invEditMode').style.display='block';};
-                document.getElementById('cancelEditBtn').onclick=()=>{document.getElementById('invViewMode').style.display='block';document.getElementById('invEditMode').style.display='none';};
-                document.getElementById('saveInvestorEditBtn').onclick=async()=>{await supabase.from('investors').update({name:document.getElementById('editInvName').value,bank_name:document.getElementById('editInvBank').value,account_number:document.getElementById('editInvAccountNo').value,id_number:document.getElementById('editInvIdNo').value,account_name:document.getElementById('editInvAccountName').value,account_type:document.getElementById('editInvAccountType').value,branch_code:document.getElementById('editInvBranchCode').value}).eq('id',id);await loadInvestors();document.getElementById('invDetailModal').remove();showNotification('Investor updated');openInvestorDetail(id);};
-                document.getElementById('closeDetailBtn').onclick=()=>document.getElementById('invDetailModal').remove();
-            };
-            
-            window.printProfitReceipt=(pid,name,amount,bank,acct)=>{const receipt=`================================\nPROFIT SHARE RECEIPT\n================================\nInvestor: ${name}\nBank: ${bank||'N/A'}\nAccount: ${acct||'N/A'}\nAmount: R${amount.toFixed(2)}\nDate: ${formatDate(new Date())}\n================================`;const w=window.open();w.document.write(`<pre style="font-family:monospace;padding:20px;">${receipt}</pre>`);w.print();};
-            window.deletePayment=async(pid,invId)=>{if(confirm('Delete this payment?')){await supabase.from('investor_payments').delete().eq('id',pid);await loadInvestorPayments();await loadInvestors();showNotification('Payment deleted');}};
-            
-            function displayAdminProducts(){document.getElementById('productList').innerHTML=products.map(p=>`<div class="compact-row"><span>${p.sku} - ${p.description} - R${p.price_inc_vat}</span><div><button onclick="editProduct('${p.sku}')" class="edit-btn">Edit</button><button onclick="delProd('${p.sku}')" class="delete-btn">Del</button></div></div>`).join('');}
-            window.editProduct=async(sku)=>{const p=products.find(pr=>pr.sku===sku);if(!p)return;const ns=prompt('SKU:',p.sku);if(!ns)return;const nd=prompt('Description:',p.description);if(!nd)return;const np=parseFloat(prompt('Price:',p.price_inc_vat));if(isNaN(np))return;await supabase.from('products').update({sku:ns,description:nd,price_inc_vat:np}).eq('sku',sku).eq('business',currentBusiness);await loadProducts();};
-            window.delProd=async(sku)=>{if(confirm('Delete product?'))await supabase.from('products').delete().eq('sku',sku).eq('business',currentBusiness);await loadProducts();};
-            
-            function updateCart(){let sub=cart.reduce((s,i)=>s+(i.price_excl*i.qty),0),vat=sub*VAT,total=sub+vat;document.getElementById('subtotalExcl').innerHTML=sub.toFixed(2);document.getElementById('vatAmount').innerHTML=vat.toFixed(2);document.getElementById('grandTotal').innerHTML=total.toFixed(2);const div=document.getElementById('cartItems');if(!cart.length){div.innerHTML='<div style="text-align:center;padding:30px;">Cart empty</div>';return;}div.innerHTML=cart.map((item,idx)=>`<div class="cart-item"><div class="cart-item-info" onclick="openPriceModal(${idx})"><strong>${item.desc}</strong><br>${item.discountPercent?`<strike>R${item.originalPrice?.toFixed(2)}</strike> `:''}<span style="color:${item.discountPercent?'#22c55e':'#0d9488'};font-weight:600;">R${item.price.toFixed(2)}</span>${item.discountPercent?` (${item.discountPercent}% off)`:''}</div><div class="cart-item-controls"><button onclick="updateQty(${idx},-1)">-</button><span>${item.qty}</span><button onclick="updateQty(${idx},1)">+</button><button onclick="removeItem(${idx})" class="delete-btn">X</button></div></div>`).join('');}
-            window.openPriceModal=function(idx){const item=cart[idx];const modalHtml=`<div id="priceModalOverlay" class="price-modal-overlay"></div><div class="price-modal"><h3>Modify: ${item.desc}</h3><div class="form-group"><label>💰 Override Price (R):</label><input type="number" id="overridePrice" value="${item.price.toFixed(2)}" step="0.01"></div><div class="form-group"><label>🏷️ OR Apply % Discount:</label><input type="number" id="discountPercentItem" placeholder="1-100" step="1"></div><div style="display:flex; gap:10px; margin-top:20px;"><button id="applyOverrideBtn" style="flex:1; background:#0d9488; color:white; padding:10px; border:none; border-radius:30px;">Apply Price</button><button id="applyItemDiscountBtn" style="flex:1; background:#f59e0b; color:white; padding:10px; border:none; border-radius:30px;">Apply %</button><button id="closePriceModalBtn" style="flex:0.5; background:#ef4444; color:white; padding:10px; border:none; border-radius:30px;">X</button></div></div>`;document.body.insertAdjacentHTML('beforeend',modalHtml);document.getElementById('applyOverrideBtn').onclick=()=>{let np=parseFloat(document.getElementById('overridePrice').value);if(np>0){cart[idx].price=np;cart[idx].price_excl=np/(1+VAT);cart[idx].discountPercent=0;cart[idx].originalPrice=null;updateCart();showNotification('Price updated');}closeModal();};document.getElementById('applyItemDiscountBtn').onclick=()=>{let dp=parseFloat(document.getElementById('discountPercentItem').value);if(dp>0&&dp<=100){if(!cart[idx].originalPrice)cart[idx].originalPrice=cart[idx].price;cart[idx].price=cart[idx].originalPrice*(1-dp/100);cart[idx].price_excl=cart[idx].price/(1+VAT);cart[idx].discountPercent=dp;updateCart();showNotification(`${dp}% discount applied`);}else alert('Enter 1-100');closeModal();};document.getElementById('closePriceModalBtn').onclick=closeModal;document.getElementById('priceModalOverlay').onclick=closeModal;function closeModal(){document.getElementById('priceModalOverlay')?.remove();document.querySelector('.price-modal')?.remove();}};
-            window.updateQty=(idx,delta)=>{let nq=cart[idx].qty+delta;if(nq<=0)cart.splice(idx,1);else cart[idx].qty=nq;updateCart();};
-            window.removeItem=(idx)=>{cart.splice(idx,1);updateCart();};
-            window.addToCart=(sku)=>{let p=products.find(pr=>pr.sku===sku);if(p){let ex=cart.find(i=>i.sku===sku);if(ex)ex.qty++;else cart.push({sku:p.sku,desc:p.description,price:p.price_inc_vat,price_excl:p.price_inc_vat/(1+VAT),qty:1,originalPrice:null,discountPercent:0});updateCart();showNotification(`${p.description} added`);document.getElementById('saleProductSearch').value='';document.getElementById('saleProductResults').innerHTML='<div>Type to search...</div>';}};
-            
-            // NEW VIP SALE LOGIC - Check for existing subscription before creating new one
-            async function processVipSale(customer, product, amount) {
-                // Check if customer already has an active or overdue subscription
-                const existingSub = subscriptions.find(s => s.customer_phone === customer.phone && s.status !== 'unsubscribed');
-                
-                if(existingSub){
-                    // If exists, ask if they want to renew instead
-                    if(confirm(`${customer.name} already has a VIP membership. Do you want to RENEW it instead of creating a new one?`)){
-                        // Renew the existing subscription
-                        const today = new Date();
-                        const newRenewalDate = new Date();
-                        newRenewalDate.setMonth(newRenewalDate.getMonth() + 1);
-                        
-                        await supabase
-                            .from('subscriptions')
-                            .update({ 
-                                date_paid: today.toISOString().split('T')[0],
-                                renewal_date: newRenewalDate.toISOString().split('T')[0],
-                                status: 'active'
-                            })
-                            .eq('id', existingSub.id);
-                        
-                        await loadSubscriptions();
-                        showNotification(`${customer.name}'s membership renewed until ${newRenewalDate.toLocaleDateString()}!`, 'success');
-                        return true;
-                    } else {
-                        return false; // User cancelled
-                    }
-                } else {
-                    // Create new subscription
-                    await supabase.from('subscriptions').insert([{
-                        customer_name: customer.name,
-                        customer_phone: customer.phone,
-                        product_name: product,
-                        amount: amount,
-                        date_paid: new Date().toISOString().split('T')[0],
-                        renewal_date: new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0],
-                        status: 'active',
-                        business: currentBusiness
-                    }]);
-                    await loadSubscriptions();
-                    return true;
-                }
+            const statusBox = document.getElementById('statusBox');
+            if (statusBox && customers.length > 0) {
+                statusBox.innerHTML = `✅ ${customers.length} customers loaded | Ready`;
             }
             
-            window.calculateProfitCapital = function() {let withdrawn = parseFloat(document.getElementById('profitWithdrawn')?.value) || 0;let percent = parseFloat(document.getElementById('adminCommissionPercent')?.value) || 0;let commission = withdrawn * (percent / 100);document.getElementById('adminCommissionAmount').innerHTML = commission.toFixed(2);let capital = withdrawn - commission;if (capital < 0) capital = 0;document.getElementById('profitCapital').innerHTML = capital.toFixed(2);updateProfitSummary();};
-            window.autoDistribute = function() {if (investors.length === 0) {showNotification('No investors found.', 'error');return;}let capital = parseFloat(document.getElementById('profitCapital')?.innerHTML) || 0;if (capital <= 0) {showNotification('No profit capital available.', 'error');return;}let equalShare = capital / investors.length;for (let i = 0; i < investors.length; i++) {let input = document.getElementById(`share_${investors[i].id}`);if (input) input.value = equalShare.toFixed(2);}updateProfitSummary();showNotification(`R${capital.toFixed(2)} divided equally among ${investors.length} investors.`);};
-            function updateProfitSummary() {let totalShare = 0;for (let i = 0; i < investors.length; i++) {let input = document.getElementById(`share_${investors[i].id}`);if (input) {let val = parseFloat(input.value) || 0;totalShare += val;}}let capital = parseFloat(document.getElementById('profitCapital')?.innerHTML) || 0;document.getElementById('totalWages').innerHTML = totalShare.toFixed(2);document.getElementById('remainingBalance').innerHTML = (capital - totalShare).toFixed(2);}
-            window.updateProfitSummary = updateProfitSummary;
-            function updateInvestorClosingBalance() {let open = parseFloat(document.getElementById('investorOpeningBalance')?.value) || 0;let comm = parseFloat(document.getElementById('investorCommissionsWithdrawn')?.value) || 0;let closing = open - comm;if (closing < 0) closing = 0;document.getElementById('investorClosingBalance').value = closing.toFixed(2);}
-            window.updateInvestorClosingBalance = updateInvestorClosingBalance;
-            async function processProfitSharing() {let totalShare = 0, entries = [];for (const inv of investors) {let input = document.getElementById(`share_${inv.id}`);let share = parseFloat(input?.value) || 0;if (share > 0) {totalShare += share;entries.push({ investorId: inv.id, amount: share });}}let capital = parseFloat(document.getElementById('profitCapital')?.innerHTML) || 0;if (totalShare > capital) {showNotification(`Total exceeds capital R${capital}`, 'error');return;}if (totalShare === 0) {showNotification('No amounts entered', 'error');return;}for (const e of entries) {await supabase.from('investor_payments').insert([{investor_id: e.investorId,amount: e.amount,date: new Date().toISOString(),receipt_number: generateProfitReceipt(),business: currentBusiness}]);}await loadInvestorPayments();renderInvestors();for (const inv of investors) {let input = document.getElementById(`share_${inv.id}`);if (input) input.value = '';}document.getElementById('profitWithdrawn').value = '0';document.getElementById('adminCommissionPercent').value = '0';calculateProfitCapital();showNotification(`Processed R${totalShare.toFixed(2)}`);}
-            async function saveInvestorAccount() {await supabase.from('investor_accounts').upsert([{opening_balance_usd: parseFloat(document.getElementById('investorOpeningBalance').value) || 0,commissions_withdrawn_usd: parseFloat(document.getElementById('investorCommissionsWithdrawn').value) || 0,business: currentBusiness}], { onConflict: 'business' });showNotification('Account saved');}
-            async function loadInvestorAccount() {const { data } = await supabase.from('investor_accounts').select('*').eq('business', currentBusiness).single();if (data) {document.getElementById('investorOpeningBalance').value = data.opening_balance_usd || 0;document.getElementById('investorCommissionsWithdrawn').value = data.commissions_withdrawn_usd || 0;updateInvestorClosingBalance();}}
+            return customers.length;
+        } catch(e) { 
+            console.error('Load customers error:', e);
+            customers = [];
+            return 0;
+        }
+    }
+    
+    // Function to display all customers alphabetically
+    function displayAllCustomers() {
+        if (customers.length === 0) {
+            document.getElementById('customerSearchResults').innerHTML = '<div style="padding:20px;text-align:center;">No customers found. Add a new customer.</div>';
+            return;
+        }
+        
+        // Sort customers alphabetically by name
+        const sortedCustomers = [...customers].sort((a, b) => a.name.localeCompare(b.name));
+        
+        document.getElementById('customerSearchResults').innerHTML = sortedCustomers.map(c => 
+            `<div class="result-item" onclick="viewProfile('${c.phone}')">
+                <strong>${c.name}</strong><br>
+                📞 ${c.phone} | ✉️ ${c.email || 'No email'} | 🆔 ${c.id_number || 'N/A'}
+            </div>`
+        ).join('');
+    }
+    
+    // Function to search customers
+    function searchCustomers(searchTerm) {
+        if (!searchTerm || searchTerm.length < 2) {
+            displayAllCustomers();
+            return;
+        }
+        
+        const filtered = customers.filter(c => 
+            c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+            c.phone.includes(searchTerm)
+        );
+        
+        if (filtered.length === 0) {
+            document.getElementById('customerSearchResults').innerHTML = '<div style="padding:20px;text-align:center;">No customers found matching your search.</div>';
+        } else {
+            const sortedFiltered = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
+            document.getElementById('customerSearchResults').innerHTML = sortedFiltered.map(c => 
+                `<div class="result-item" onclick="viewProfile('${c.phone}')">
+                    <strong>${c.name}</strong><br>
+                    📞 ${c.phone} | ✉️ ${c.email || 'No email'} | 🆔 ${c.id_number || 'N/A'}
+                </div>`
+            ).join('');
+        }
+    }
+    
+    async function loadProducts(){ 
+        try {
+            const tableName = getTableName('products');
+            const { data, error } = await supabase
+                .from(tableName)
+                .select('*');
             
-            // MODIFIED completeSale function to handle VIP renewals
-            async function completeSale(){let total=parseFloat(document.getElementById('grandTotal').innerHTML),paid=parseFloat(document.getElementById('paymentAmount').value)||0,method=document.getElementById('tenderPaymentMethodSelect').value,bank=document.getElementById('bankName').value;if(paid<total){showNotification('Insufficient','error');return;}let receiptNum=shortReceipt();let transaction={receipt_number:receiptNum,customer_phone:saleCustomer.phone,customer_name:saleCustomer.name,business:currentBusiness,cashier:currentUser.username,items:cart.map(i=>({sku:i.sku,description:i.desc,quantity:i.qty,current_price:i.price,total:i.price*i.qty})),subtotal_excl_vat:parseFloat(document.getElementById('subtotalExcl').innerHTML),vat_amount:parseFloat(document.getElementById('vatAmount').innerHTML),discount_percent:0,discount_amount:0,total:total,cash_paid:method==='Cash'?paid:0,card_paid:method==='Card'?paid:0,eft_paid:method==='EFT'?paid:0,change_due:paid-total,payment_details:method==='EFT'?`Bank: ${bank}`:'',date:new Date().toISOString()};await supabase.from('transactions').insert([transaction]);
+            if (error) throw error;
             
-            // Check for VIP product in cart
-            let vipItem=cart.find(i=>i.desc.toLowerCase().includes('vip'));
-            if(vipItem){
-                // Use the new VIP renewal logic
-                await processVipSale(saleCustomer, vipItem.desc, vipItem.price);
+            if (data && data.length > 0) {
+                products = data;
+                console.log(`Loaded ${products.length} products from Supabase`);
+            } else {
+                products = [];
+                console.log('No products found');
             }
             
-            await loadTransactions();await loadSubscriptions();document.getElementById('receiptContent').innerHTML=`<pre>${generateReceiptText(transaction)}</pre>`;document.getElementById('receiptModal').style.display='flex';resetSale();showNotification('Sale completed!');}
-            
-            function generateReceiptText(t){return `================================\n${currentBusiness==='ultron'?'ULTRON TRADING':'GIFTEDLY'}\n================================\nReceipt: ${t.receipt_number}\nDate: ${formatDate(t.date)}\nCashier: ${t.cashier}\n--------------------------------\n${t.customer_name}\n--------------------------------\n${t.items.map(i=>`${i.description} x${i.quantity} = R${(i.current_price*i.quantity).toFixed(2)}`).join('\n')}\n--------------------------------\nSubtotal: R${t.subtotal_excl_vat.toFixed(2)}\nVAT: R${t.vat_amount.toFixed(2)}\nTOTAL: R${t.total.toFixed(2)}\nPaid: R${(t.cash_paid+t.card_paid+t.eft_paid).toFixed(2)}\nChange: R${t.change_due.toFixed(2)}\n================================\nTHANK YOU!`;}
-            window.viewReceipt=async(id)=>{let{data}=await supabase.from('transactions').select('*').eq('id',id).single();if(data){document.getElementById('receiptContent').innerHTML=`<pre>${generateReceiptText(data)}</pre>`;document.getElementById('receiptModal').style.display='flex';}};
-            window.printReceiptFromHistory=async(id)=>{let{data}=await supabase.from('transactions').select('*').eq('id',id).single();if(data){const w=window.open();w.document.write(`<pre style="font-family:monospace;padding:20px;">${generateReceiptText(data)}</pre>`);w.print();}};
-            function resetSale(){cart=[];saleCustomer=null;document.getElementById('saleCustomerSection').style.display='block';document.getElementById('saleProductsSection').style.display='none';document.getElementById('salePaymentSection').style.display='none';updateCart();document.getElementById('saleCustomerSearch').value='';document.getElementById('saleCustomerResults').innerHTML='';}
-            async function login(){let business=document.querySelector('input[name="business"]:checked').value,un=document.getElementById('loginUsername').value,pw=document.getElementById('loginPassword').value;if(!un||!pw){showNotification('Enter credentials','error');return;}const connected=await initSupabase();if(!connected){showNotification('Cannot connect','error');return;}let{data}=await supabase.from('users').select('*').eq('username',un).eq('password',pw).eq('business',business);if(!data||data.length===0){showNotification('Invalid credentials!','error');return;}currentBusiness=business;currentUser=data[0];document.body.className=business==='ultron'?'ultron-mode':'giftedly-mode';document.getElementById('businessIcon').src=business==='ultron'?'https://i.postimg.cc/qv2t661k/Gemini-Generated-Image-fmbxwpfmbxwpfmbx.png':'';document.getElementById('businessName').innerHTML=business==='ultron'?'Ultron Trading Solutions':'Giftedly';await Promise.all([loadCustomers(),loadProducts(),loadTransactions(),loadInvestors(),loadSubscriptions(),loadInvestorAccount()]);document.querySelectorAll('.admin-only').forEach(el=>el.style.display=currentUser.role==='admin'?'block':'none');document.querySelectorAll('.ultron-only-tab').forEach(el=>el.style.display=business==='ultron'?'block':'none');document.getElementById('userRoleDisplay').innerHTML=`${un} (${currentUser.role})`;document.getElementById('loginPage').style.display='none';document.getElementById('posSystem').style.display='block';resetSale();if(currentUser.role==='admin')loadUsers();showNotification('Login successful!');}
-            function logout(){document.getElementById('posSystem').style.display='none';document.getElementById('loginPage').style.display='flex';currentUser=null;}
-            
-            document.getElementById('loginBtn').onclick=login;document.getElementById('logoutBtn').onclick=logout;
-            document.getElementById('saleCustomerSearch').addEventListener('input',e=>{let val=e.target.value;if(val.length<2)return;let f=customers.filter(c=>c.name.toLowerCase().includes(val.toLowerCase())||c.phone.includes(val));document.getElementById('saleCustomerResults').innerHTML=f.map(c=>`<div class="result-item" onclick="selectSaleCustomer('${c.phone}')"><strong>${c.name}</strong><br>📞 ${c.phone}</div>`).join('');});
-            window.selectSaleCustomer=(phone)=>{saleCustomer=customers.find(c=>c.phone===phone);document.getElementById('saleCustomerSection').style.display='none';document.getElementById('saleProductsSection').style.display='block';document.getElementById('currentCustomerInfo').innerHTML=`<strong>${saleCustomer.name}</strong><br>📞 ${saleCustomer.phone}<br>✉️ ${saleCustomer.email||''}<br>🆔 ${saleCustomer.id_number||'N/A'}`;};
-            document.getElementById('saleProductSearch').addEventListener('input',e=>{let val=e.target.value;if(val.length<2){document.getElementById('saleProductResults').innerHTML='<div>Type 2+ characters</div>';return;}let f=products.filter(p=>p.sku.toLowerCase().includes(val.toLowerCase())||p.description.toLowerCase().includes(val.toLowerCase()));document.getElementById('saleProductResults').innerHTML=f.map(p=>`<div class="result-item" onclick="addToCart('${p.sku}')"><strong>${p.sku}</strong> - ${p.description}<br>R${p.price_inc_vat}</div>`).join('');});
-            document.getElementById('proceedToTenderBtn').onclick=()=>{if(!cart.length){showNotification('Cart empty');return;}document.getElementById('saleProductsSection').style.display='none';document.getElementById('salePaymentSection').style.display='block';document.getElementById('tenderCustomerName').innerHTML=saleCustomer.name;document.getElementById('tenderTotal').innerHTML=`R${document.getElementById('grandTotal').innerHTML}`;};
-            document.getElementById('completeTenderBtn').onclick=completeSale;document.getElementById('backToCartBtn').onclick=()=>{document.getElementById('salePaymentSection').style.display='none';document.getElementById('saleProductsSection').style.display='block';};
-            document.getElementById('clearSaleBtn').onclick=resetSale;
-            document.getElementById('createCustomerBtn').onclick=async()=>{let n=document.getElementById('newCustomerName').value,p=document.getElementById('newCustomerPhone').value,e=document.getElementById('newCustomerEmail').value,idn=document.getElementById('newCustomerIdNumber').value,s=document.getElementById('newCustomerSince').value||new Date().toISOString().split('T')[0];if(!n||!p){showNotification('Name & phone required','error');return;}await supabase.from('customers').insert([{name:n,phone:p,email:e,id_number:idn,since_date:s}]);await loadCustomers();showNotification('Customer created');};
-            document.getElementById('customerSearchInput').addEventListener('input',e=>{let val=e.target.value;if(val.length<2)return;let f=customers.filter(c=>c.name.toLowerCase().includes(val.toLowerCase())||c.phone.includes(val));document.getElementById('customerSearchResults').innerHTML=f.map(c=>`<div class="result-item" onclick="viewProfile('${c.phone}')"><strong>${c.name}</strong> - ${c.phone}</div>`).join('');});
-            window.viewProfile=async(phone)=>{let c=customers.find(c=>c.phone===phone);if(!c)return;let{data:hist}=await supabase.from('transactions').select('*').eq('customer_phone',phone).order('date',{ascending:false});let{data:subs}=await supabase.from('subscriptions').select('*').eq('customer_phone',phone);document.getElementById('viewCustomerInfo').innerHTML=`<strong>${c.name}</strong><br>📞 ${c.phone}<br>✉️ ${c.email||'N/A'}<br>🆔 ${c.id_number||'N/A'}<br>Since: ${c.since_date}`;document.getElementById('editName').value=c.name;document.getElementById('editPhone').value=c.phone;document.getElementById('editEmail').value=c.email||'';document.getElementById('editIdNumber').value=c.id_number||'';document.getElementById('editSinceDate').value=c.since_date||'';document.getElementById('customerHistoryList').innerHTML=hist?.map(t=>`<div class="compact-row" style="border-bottom:1px solid #e2e8f0;padding:8px;"><span><strong>${t.receipt_number}</strong> | ${formatDate(t.date)} | R${t.total.toFixed(2)}</span><div><button onclick="printReceiptFromHistory(${t.id})" class="edit-btn">Print</button>${currentUser?.role==='admin'?`<button onclick="deleteTransaction(${t.id},'${phone}')" class="delete-btn">Delete</button>`:''}</div></div>`).join('')||'<div>No purchases</div>';document.getElementById('customerSubscriptionsList').innerHTML=subs?.map(s=>`<div class="compact-row">${s.product_name} - R${s.amount} - ${s.status==='unsubscribed'?'❌ Unsubscribed':new Date(s.renewal_date).toLocaleDateString()}</div>`).join('')||'<div>No VIP</div>';document.getElementById('customerViewDetails').style.display='block';window.currentProfilePhone=phone;};
-            window.deleteTransaction=async(tid,phone)=>{if(confirm('Delete transaction?')){await supabase.from('transactions').delete().eq('id',tid);await loadTransactions();viewProfile(phone);showNotification('Deleted');}};
-            document.getElementById('deleteCustomerBtn')?.addEventListener('click',async()=>{if(confirm('Delete customer?')){await supabase.from('transactions').delete().eq('customer_phone',window.currentProfilePhone);await supabase.from('subscriptions').delete().eq('customer_phone',window.currentProfilePhone);await supabase.from('customers').delete().eq('phone',window.currentProfilePhone);await loadCustomers();document.getElementById('customerViewDetails').style.display='none';showNotification('Customer deleted');}});
-            document.getElementById('showEditFormBtn').onclick=()=>{document.getElementById('editCustomerForm').style.display='block';};
-            document.getElementById('cancelEditBtn').onclick=()=>{document.getElementById('editCustomerForm').style.display='none';};
-            document.getElementById('saveEditBtn').onclick=async()=>{let phone=window.currentProfilePhone;await supabase.from('customers').update({name:document.getElementById('editName').value,phone:document.getElementById('editPhone').value,email:document.getElementById('editEmail').value,id_number:document.getElementById('editIdNumber').value,since_date:document.getElementById('editSinceDate').value}).eq('phone',phone);await loadCustomers();viewProfile(document.getElementById('editPhone').value);document.getElementById('editCustomerForm').style.display='none';showNotification('Updated');};
-            document.getElementById('createUserBtn').onclick=async()=>{let un=document.getElementById('newUsername').value,pw=document.getElementById('newPassword').value,role=document.getElementById('newUserRole').value;if(un&&pw)await supabase.from('users').insert([{username:un,password:pw,role,business:currentBusiness}]);await loadUsers();};
-            document.getElementById('createProductBtn').onclick=async()=>{let sku=document.getElementById('newProductSku').value,desc=document.getElementById('newProductDesc').value,price=parseFloat(document.getElementById('newProductPrice').value);if(sku&&desc&&price)await supabase.from('products').insert([{sku,description:desc,price_inc_vat:price,business:currentBusiness}]);await loadProducts();};
-            document.getElementById('applyFilterBtn').onclick=()=>renderTransactions();
-            document.getElementById('clearFilterBtn').onclick=()=>{document.getElementById('filterDateFrom').value='';document.getElementById('filterDateTo').value='';document.getElementById('filterPaymentMethod').value='';renderTransactions();};
-            document.getElementById('applyVipFilterBtn').onclick=()=>renderSubscriptions();
-            document.getElementById('clearVipFilterBtn').onclick=()=>{document.getElementById('vipDateFrom').value='';document.getElementById('vipDateTo').value='';document.getElementById('subscriptionSearch').value='';document.getElementById('subscriptionFilter').value='all';renderSubscriptions();};
-            document.getElementById('payrollEmployeesTab').onclick=()=>{document.getElementById('payrollEmployeesSection').style.display='block';document.getElementById('payrollRunSection').style.display='none';document.getElementById('investorAccountSection').style.display='none';};
-            document.getElementById('payrollRunTab').onclick=()=>{document.getElementById('payrollEmployeesSection').style.display='none';document.getElementById('payrollRunSection').style.display='block';document.getElementById('investorAccountSection').style.display='none';let html='';for(let i of investors){html+=`<div class="compact-row" style="margin-bottom:8px;"><span><strong>${i.name}</strong></span><input type="number" id="share_${i.id}" placeholder="Amount (R)" step="0.01" oninput="updateProfitSummary()" style="width:140px; padding:8px; border-radius:10px;"></div>`;}document.getElementById('payrollWageList').innerHTML=html||'<div>No investors added yet</div>';updateProfitSummary();};
-            document.getElementById('investorAccountBtn').onclick=()=>{document.getElementById('payrollEmployeesSection').style.display='none';document.getElementById('payrollRunSection').style.display='none';document.getElementById('investorAccountSection').style.display='block';};
-            document.getElementById('runPayrollBtn').onclick=processProfitSharing;
-            document.getElementById('saveInvestorAccountBtn').onclick=saveInvestorAccount;
-            document.getElementById('autoDistributeBtn').onclick=window.autoDistribute;
-            document.getElementById('addEmployeeBtn').onclick=async()=>{let name=prompt('Investor name:');if(name)await supabase.from('investors').insert([{name,business:currentBusiness}]);await loadInvestors();};
-            async function loadUsers(){if(currentUser?.role!=='admin')return;let{data}=await supabase.from('users').select('*').eq('business',currentBusiness);document.getElementById('userList').innerHTML=data?.map(u=>`<div class="compact-row">${u.username} (${u.role}) ${u.username!==currentUser.username?`<button onclick="deleteUser('${u.username}')" class="delete-btn">Delete</button>`:''}</div>`).join('')||'';}
-            window.deleteUser=async(un)=>{if(confirm('Delete user?')){await supabase.from('users').delete().eq('username',un).eq('business',currentBusiness);await loadUsers();}};
-            document.getElementById('paymentAmount').addEventListener('input',()=>{let total=parseFloat(document.getElementById('tenderTotal').innerHTML.replace('R',''))||0,amt=parseFloat(document.getElementById('paymentAmount').value)||0;document.getElementById('tenderAmount').innerHTML=`R${amt.toFixed(2)}`;document.getElementById('tenderChange').innerHTML=`R${(amt-total).toFixed(2)}`;});
-            document.getElementById('tenderPaymentMethodSelect').addEventListener('change',e=>{document.getElementById('bankField').style.display=e.target.value==='EFT'?'block':'none';});
-            document.getElementById('printReceiptBtn').onclick=()=>{let w=window.open();w.document.write(`<pre>${document.getElementById('receiptContent').innerText}</pre>`);w.print();};
-            document.getElementById('closeReceiptBtn').onclick=()=>{document.getElementById('receiptModal').style.display='none';};
-            document.querySelectorAll('.tab').forEach(tab=>tab.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));tab.classList.add('active');document.getElementById(tab.dataset.tab).classList.add('active');}));
-            let npad=document.getElementById('numpadContainer');if(npad)for(let n of [1,2,3,4,5,6,7,8,9,0,'.','C']){let btn=document.createElement('button');btn.textContent=n;btn.className='num-btn';btn.onclick=()=>{let inp=document.getElementById('paymentAmount');if(n==='C')inp.value='';else inp.value+=n;inp.dispatchEvent(new Event('input'));};npad.appendChild(btn);}
-            initSupabase();
-        })();
-    </script>
+            renderProductCatalog(); 
+            if(currentUser?.role === 'admin') renderAdminProducts();
+            return products.length;
+        } catch(e) { 
+            console.error('Load products error:', e);
+            products = [];
+            renderProductCatalog();
+            return 0;
+        }
+    }
+    
+    function renderProductCatalog(){ 
+        if (products.length === 0) {
+            document.getElementById('productSearchResults').innerHTML = '<div>No products found. Add products in Admin panel.</div>';
+            return;
+        }
+        document.getElementById('productSearchResults').innerHTML = products.map(p => `<div class="result-item">📦 ${p.sku} - ${p.description}<br><strong style="color:var(--primary);">R${p.price_inc_vat.toFixed(2)}</strong></div>`).join(''); 
+    }
+    
+    function renderAdminProducts(){ 
+        if (products.length === 0) {
+            document.getElementById('productList').innerHTML = '<div>No products. Add some above.</div>';
+            return;
+        }
+        document.getElementById('productList').innerHTML = products.map(p => `<div class="compact-row"><span><strong>${p.sku}</strong> - ${p.description} - R${p.price_inc_vat}</span><div><button onclick="editProduct('${p.sku}')" class="edit-btn">Edit</button><button onclick="delProd('${p.sku}')" class="delete-btn">Del</button></div></div>`).join('');
+    }
+    
+    window.editProduct = async(sku) => {
+        let p = products.find(pr => pr.sku === sku);
+        if(!p) return;
+        let nd = prompt('Description:', p.description);
+        if(!nd) return;
+        let np = parseFloat(prompt('Price:', p.price_inc_vat));
+        if(isNaN(np)) return;
+        const tableName = getTableName('products');
+        await supabase.from(tableName).update({description: nd, price_inc_vat: np}).eq('sku', sku);
+        await loadProducts();
+        showNotification('Product updated');
+    };
+    
+    window.delProd = async(sku) => {
+        if(confirm('Delete product?')) {
+            const tableName = getTableName('products');
+            await supabase.from(tableName).delete().eq('sku', sku);
+            await loadProducts();
+            showNotification('Product deleted');
+        }
+    };
+    
+    async function loadTransactions(){ 
+        try {
+            const tableName = getTableName('transactions');
+            const { data } = await supabase
+                .from(tableName)
+                .select('*')
+                .order('date', {ascending: false}); 
+            if(data) { transactions = data; renderTransactions(); }
+        } catch(e) { console.error('Load transactions error:', e); }
+    }
+    
+    async function loadSubscriptions(){ 
+        try {
+            const tableName = getTableName('subscriptions');
+            const { data } = await supabase
+                .from(tableName)
+                .select('*')
+                .order('created_at', {ascending: false}); 
+            if(data) { subscriptions = data; renderSubscriptions(); }
+        } catch(e) { console.error('Load subscriptions error:', e); }
+    }
+    
+    async function loadInvestors(){ 
+        try {
+            const tableName = getTableName('investors');
+            const { data } = await supabase
+                .from(tableName)
+                .select('*'); 
+            if(data) { investors = data; await loadInvestorPayments(); renderInvestors(); }
+        } catch(e) { console.error('Load investors error:', e); }
+    }
+    
+    async function loadInvestorPayments(){ 
+        try {
+            const tableName = getTableName('investor_payments');
+            const { data } = await supabase
+                .from(tableName)
+                .select('*'); 
+            if(data) investorPayments = data;
+        } catch(e) { console.error('Load payments error:', e); }
+    }
+    
+    function getTotalPaid(iid){ return investorPayments.filter(p => p.investor_id === iid).reduce((s,p) => s + p.amount, 0); }
+    
+    async function loadInvestorAccount() { 
+        try {
+            const tableName = getTableName('investor_accounts');
+            const { data } = await supabase
+                .from(tableName)
+                .select('*')
+                .single(); 
+            if(data) { 
+                document.getElementById('investorOpeningBalance').value = data.opening_balance_usd || 0; 
+                document.getElementById('investorCommissionsWithdrawn').value = data.commissions_withdrawn_usd || 0; 
+                updateInvestorClosingBalance(); 
+            }
+        } catch(e) { console.error('Load account error:', e); }
+    }
+    
+    function renderTransactions(){ 
+        let f = [...transactions]; 
+        let from = document.getElementById('filterDateFrom')?.value, to = document.getElementById('filterDateTo')?.value, method = document.getElementById('filterPaymentMethod')?.value;
+        if(from) f = f.filter(t => new Date(t.date) >= new Date(from));
+        if(to) { let e = new Date(to); e.setHours(23,59,59); f = f.filter(t => new Date(t.date) <= e); }
+        if(method) f = f.filter(t => (method === 'Cash' ? t.cash_paid > 0 : method === 'Card' ? t.card_paid > 0 : method === 'EFT' ? t.eft_paid > 0 : true));
+        document.getElementById('transactionResults').innerHTML = f.map(t => `<div class="transaction-item" onclick="viewReceipt(${t.id})"><strong>🧾 ${t.receipt_number}</strong> | ${new Date(t.date).toLocaleString()} | R${t.total.toFixed(2)}</div>`).join('') || '<div>No transactions</div>';
+    }
+    
+    window.renewSubscription = async(id) => {
+        if(confirm('Renew VIP (+30 days)?')) {
+            let today = new Date(), renewal = new Date();
+            renewal.setMonth(renewal.getMonth() + 1);
+            const tableName = getTableName('subscriptions');
+            await supabase.from(tableName).update({start_date: today.toISOString().split('T')[0], renewal_date: renewal.toISOString().split('T')[0], status: 'active'}).eq('id', id);
+            await loadSubscriptions();
+            showNotification('Membership renewed');
+        }
+    };
+    
+    window.unsubscribeSubscription = async(id) => {
+        if(confirm('Unsubscribe from VIP?')) {
+            const tableName = getTableName('subscriptions');
+            await supabase.from(tableName).update({status: 'unsubscribed'}).eq('id', id);
+            await loadSubscriptions();
+            showNotification('Unsubscribed');
+        }
+    };
+    
+    window.delSub = async(id) => {
+        if(confirm('Delete subscription?')) {
+            const tableName = getTableName('subscriptions');
+            await supabase.from(tableName).delete().eq('id', id);
+            await loadSubscriptions();
+            showNotification('Subscription deleted');
+        }
+    };
+    
+    function needsReminder(renewalDate) {
+        if (!renewalDate) return false;
+        let diffDays = Math.ceil((new Date(renewalDate) - new Date()) / (1000 * 60 * 60 * 24));
+        return diffDays === 2 || diffDays === 1 || diffDays === 0;
+    }
+    
+    function renderSubscriptions(){ 
+        let list = [...subscriptions], search = document.getElementById('subscriptionSearch')?.value.toLowerCase(), filter = document.getElementById('subscriptionFilter')?.value;
+        if(search) list = list.filter(s => s.customer_name.toLowerCase().includes(search));
+        if(filter === 'active') list = list.filter(s => s.status !== 'unsubscribed' && new Date(s.renewal_date) >= new Date());
+        else if(filter === 'overdue') list = list.filter(s => s.status !== 'unsubscribed' && new Date(s.renewal_date) < new Date());
+        else if(filter === 'unsubscribed') list = list.filter(s => s.status === 'unsubscribed');
+        document.getElementById('subscriptionList').innerHTML = list.map(s => {
+            let isUnsubscribed = s.status === 'unsubscribed', isOverdue = !isUnsubscribed && new Date(s.renewal_date) < new Date(), needsReminderFlag = !isUnsubscribed && !isOverdue && needsReminder(s.renewal_date);
+            let startDateDisplay = s.start_date ? new Date(s.start_date).toLocaleDateString() : (s.date_paid ? new Date(s.date_paid).toLocaleDateString() : 'N/A');
+            return `<div class="subscription-item ${isUnsubscribed ? 'unsubscribed' : isOverdue ? 'overdue' : 'active'}"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;"><div><strong>${s.customer_name}</strong> | ${s.product_name} | R${s.amount}${needsReminderFlag ? '<span class="reminder-badge">🔔 Due in 2 days</span>' : ''}</div><div><span style="font-size:11px;">Start: ${startDateDisplay} | Renews: ${isUnsubscribed ? 'Cancelled' : new Date(s.renewal_date).toLocaleDateString()}</span>${needsReminderFlag ? `<button onclick="sendReminder(${s.id},'${s.customer_name}','${s.customer_phone}','${s.product_name}','${s.renewal_date}')" class="whatsapp-btn">📱 Remind</button>` : ''}${!isUnsubscribed ? `<button onclick="renewSubscription(${s.id})" class="renew-btn" style="background:var(--primary);color:white;">🔄 Renew</button>` : ''}${!isUnsubscribed ? `<button onclick="unsubscribeSubscription(${s.id})" class="unsubscribe-btn">❌ Unsubscribe</button>` : ''}<button onclick="delSub(${s.id})" class="delete-btn">🗑️ Delete</button></div></div></div>`;
+        }).join('') || '<div>No subscriptions</div>';
+    }
+    
+    window.sendReminder = function(subscriptionId, customerName, customerPhone, productName, renewalDate) {
+        sendWhatsApp(customerPhone, `🔔 VIP REMINDER\n\nDear ${customerName},\n\nYour ${productName} VIP membership expires on ${new Date(renewalDate).toLocaleDateString()}.\n\nPlease renew to continue your benefits!\n\nThank you.`);
+        showNotification(`Reminder sent to ${customerName}`);
+    };
+    
+    window.sendBulkReminders = function() {
+        let dueMembers = subscriptions.filter(s => s.status !== 'unsubscribed' && needsReminder(s.renewal_date));
+        if(dueMembers.length === 0) { showNotification('No members due for renewal'); return; }
+        if(confirm(`Send reminders to ${dueMembers.length} member(s)?`)) {
+            dueMembers.forEach(m => sendWhatsApp(m.customer_phone, `🔔 VIP REMINDER\n\nDear ${m.customer_name},\n\nYour ${m.product_name} VIP membership expires on ${new Date(m.renewal_date).toLocaleDateString()}.\n\nPlease renew!\n\nThank you.`));
+            showNotification(`Sent to ${dueMembers.length} member(s)`);
+        }
+    };
+    
+    window.sendCustomerWhatsApp = function(customerName, customerPhone) {
+        sendWhatsApp(customerPhone, `Hello ${customerName},\n\nHow can we assist you today?\n\nRegards,\n${currentBusiness === 'ultron' ? 'Ultron Trading' : 'Giftedly'}`);
+        showNotification(`Opening WhatsApp for ${customerName}`);
+    };
+    
+    window.openBroadcastModal = function() {
+        const modal = document.getElementById('broadcastModal');
+        const checklist = document.getElementById('customerChecklist');
+        modal.style.display = 'flex';
+        if (customers.length === 0) {
+            checklist.innerHTML = '<div style="padding:20px;text-align:center;">No customers available</div>';
+            return;
+        }
+        const sortedCustomers = [...customers].sort((a, b) => a.name.localeCompare(b.name));
+        checklist.innerHTML = sortedCustomers.map(c => `<div class="customer-checkbox-item"><input type="checkbox" id="cust_${c.phone}" value="${c.phone}" data-name="${c.name}" data-phone="${c.phone}"><label for="cust_${c.phone}"><strong>${c.name}</strong> - 📞 ${c.phone}</label></div>`).join('');
+    };
+    
+    document.getElementById('selectAllBtn')?.addEventListener('click', () => document.querySelectorAll('#customerChecklist input').forEach(cb => cb.checked = true));
+    document.getElementById('deselectAllBtn')?.addEventListener('click', () => document.querySelectorAll('#customerChecklist input').forEach(cb => cb.checked = false));
+    document.getElementById('sendBroadcastBtn')?.addEventListener('click', () => {
+        let selected = [], message = document.getElementById('broadcastMessage').value;
+        if(!message) { showNotification('Enter a message'); return; }
+        document.querySelectorAll('#customerChecklist input:checked').forEach(cb => selected.push({ name: cb.getAttribute('data-name'), phone: cb.getAttribute('data-phone') }));
+        if(selected.length === 0) { showNotification('Select customers'); return; }
+        if(confirm(`Send to ${selected.length} customer(s)?`)) {
+            selected.forEach(c => sendWhatsApp(c.phone, message));
+            showNotification(`Sent to ${selected.length} customer(s)`);
+            document.getElementById('broadcastModal').style.display = 'none';
+            document.getElementById('broadcastMessage').value = '';
+        }
+    });
+    document.getElementById('closeBroadcastBtn')?.addEventListener('click', () => document.getElementById('broadcastModal').style.display = 'none');
+    
+    function renderInvestors(){ 
+        document.getElementById('employeeList').innerHTML = investors.map(i => `<div class="investor-item" onclick="openInvestorDetail(${i.id})"><div><strong>${i.name}</strong><br>💰 Total: R${getTotalPaid(i.id).toFixed(2)}${i.bank_name ? `<br>🏦 ${i.bank_name}` : ''}</div><button onclick="event.stopPropagation();deleteInvestor(${i.id})" class="delete-btn">Delete</button></div>`).join('') || '<div>No investors</div>';
+    }
+    
+    window.deleteInvestor = async(id) => {
+        if(confirm('Delete investor?')) {
+            const paymentsTable = getTableName('investor_payments');
+            const investorsTable = getTableName('investors');
+            await supabase.from(paymentsTable).delete().eq('investor_id', id);
+            await supabase.from(investorsTable).delete().eq('id', id);
+            await loadInvestors();
+            showNotification('Investor deleted');
+        }
+    };
+    
+    window.openInvestorDetail = async(id) => {
+        const inv = investors.find(i => i.id === id);
+        if(!inv) return;
+        const payments = investorPayments.filter(p => p.investor_id === id);
+        const modalHtml = `<div id="invDetailModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10002;display:flex;align-items:center;justify-content:center;"><div style="background:var(--bg-card);padding:28px;border-radius:28px;width:500px;max-height:85vh;overflow-y:auto;border:1px solid #334155;"><div><div style="display:flex;justify-content:space-between;margin-bottom:20px;"><h2 style="color:var(--primary);">${inv.name}</h2><button onclick="closeInvestorDetail()" class="delete-btn">Close</button></div><div class="customer-details"><div class="investor-detail-row"><span class="investor-detail-label">Bank:</span><span>${inv.bank_name || 'Not set'}</span></div><div class="investor-detail-row"><span class="investor-detail-label">Account:</span><span>${inv.account_number || 'Not set'}</span></div><div class="investor-detail-row"><span class="investor-detail-label">ID:</span><span>${inv.id_number || 'Not set'}</span></div><div class="investor-detail-row"><span class="investor-detail-label">Total:</span><span style="color:var(--primary);">R${getTotalPaid(id).toFixed(2)}</span></div></div><h4>Payment History</h4><div>${payments.length ? payments.map(p => `<div class="compact-row" style="padding:10px;border-bottom:1px solid #334155;"><span>R${p.amount} | ${new Date(p.date).toLocaleString()}</span><button onclick="deletePayment(${p.id},${id})" class="delete-btn">Delete</button></div>`).join('') : '<div>No history</div>'}</div><button onclick="closeInvestorDetail()" class="btn-primary" style="margin-top:15px;">Close</button></div></div></div>`;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    };
+    
+    window.closeInvestorDetail = function() { document.getElementById('invDetailModal')?.remove(); };
+    window.deletePayment = async(pid, invId) => {
+        if(confirm('Delete payment?')) {
+            const paymentsTable = getTableName('investor_payments');
+            await supabase.from(paymentsTable).delete().eq('id', pid);
+            await loadInvestorPayments();
+            await loadInvestors();
+            closeInvestorDetail();
+            showNotification('Payment deleted');
+            openInvestorDetail(invId);
+        }
+    };
+    
+    window.updateInvestorClosingBalance = function(){ 
+        let open = parseFloat(document.getElementById('investorOpeningBalance')?.value) || 0, comm = parseFloat(document.getElementById('investorCommissionsWithdrawn')?.value) || 0; 
+        document.getElementById('investorClosingBalance').value = Math.max(0, open - comm).toFixed(2); 
+    };
+    
+    async function saveInvestorAccount() {
+        const tableName = getTableName('investor_accounts');
+        await supabase.from(tableName).upsert([{
+            opening_balance_usd: parseFloat(document.getElementById('investorOpeningBalance').value) || 0,
+            commissions_withdrawn_usd: parseFloat(document.getElementById('investorCommissionsWithdrawn').value) || 0
+        }], { onConflict: 'id' });
+        showNotification('Account saved');
+    }
+    
+    function updateCart(){ 
+        let sub = cart.reduce((s,i) => s + (i.price_excl * i.qty), 0), vat = sub * VAT, total = sub + vat; 
+        document.getElementById('subtotalExcl').innerHTML = sub.toFixed(2); 
+        document.getElementById('vatAmount').innerHTML = vat.toFixed(2); 
+        document.getElementById('grandTotal').innerHTML = total.toFixed(2); 
+        let div = document.getElementById('cartItems'); 
+        if(!cart.length){ div.innerHTML = '<div style="text-align:center;padding:30px;">Cart empty</div>'; return; } 
+        div.innerHTML = cart.map((item,idx) => `<div class="cart-item"><div class="cart-item-info" onclick="openPriceWithPassword(${idx})"><strong>${item.desc}</strong><br><span style="color:var(--primary);">R${item.price.toFixed(2)}</span>${item.discountPercent ? ` (${item.discountPercent}% off)` : ''}</div><div class="cart-item-controls"><button onclick="updateQty(${idx},-1)">-</button><span>${item.qty}</span><button onclick="updateQty(${idx},1)">+</button><button onclick="removeItem(${idx})" class="delete-btn">X</button></div></div>`).join('');
+    }
+    
+    window.openPriceWithPassword = function(idx) {
+        if(currentUser?.role === 'admin') { showPriceModal(idx); return; }
+        let pwd = prompt("Admin password required:");
+        if(pwd !== "Sh@rlene1984") { showNotification("Access denied"); return; }
+        showPriceModal(idx);
+    };
+    
+    function showPriceModal(idx){
+        const item = cart[idx];
+        const modalHtml = `<div id="priceModalOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10003;"></div><div class="price-modal" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg-card);border-radius:28px;padding:28px;width:380px;z-index:10004;"><h3>Modify: ${item.desc}</h3><div><label>Override Price (R):</label><input type="number" id="overridePrice" value="${item.price.toFixed(2)}" step="0.01"></div><div><label>Discount %:</label><input type="number" id="discountPercentItem" placeholder="1-100"></div><div style="display:flex;gap:12px;margin-top:20px;"><button id="applyOverrideBtn" class="btn-primary">Set Price</button><button id="applyItemDiscountBtn" class="edit-btn">Apply %</button><button id="closePriceModalBtn" class="delete-btn">Cancel</button></div></div>`;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        document.getElementById('applyOverrideBtn').onclick = () => { let np = parseFloat(document.getElementById('overridePrice').value); if(np > 0){ cart[idx].price = np; cart[idx].price_excl = np/(1+VAT); cart[idx].discountPercent = 0; updateCart(); showNotification('Price updated'); closeModalPrice(); } };
+        document.getElementById('applyItemDiscountBtn').onclick = () => { let dp = parseFloat(document.getElementById('discountPercentItem').value); if(dp > 0 && dp <= 100){ if(!cart[idx].originalPrice) cart[idx].originalPrice = cart[idx].price; cart[idx].price = cart[idx].originalPrice * (1 - dp/100); cart[idx].price_excl = cart[idx].price/(1+VAT); cart[idx].discountPercent = dp; updateCart(); showNotification(`${dp}% discount applied`); closeModalPrice(); } else alert('Enter 1-100'); };
+        document.getElementById('closePriceModalBtn').onclick = closeModalPrice;
+        document.getElementById('priceModalOverlay').onclick = closeModalPrice;
+        function closeModalPrice(){ document.getElementById('priceModalOverlay')?.remove(); document.querySelector('.price-modal')?.remove(); }
+    }
+    
+    window.updateQty = (idx,delta) => { let nq = cart[idx].qty + delta; if(nq <= 0) cart.splice(idx,1); else cart[idx].qty = nq; updateCart(); };
+    window.removeItem = (idx) => { cart.splice(idx,1); updateCart(); };
+    window.addToCart = (sku) => { let p = products.find(pr => pr.sku === sku); if(p){ let ex = cart.find(i => i.sku === sku); if(ex) ex.qty++; else cart.push({sku: p.sku, desc: p.description, price: p.price_inc_vat, price_excl: p.price_inc_vat/(1+VAT), qty: 1, originalPrice: null, discountPercent: 0}); updateCart(); showNotification(`✓ ${p.description} added`); document.getElementById('saleProductSearch').value = ''; document.getElementById('saleProductResults').innerHTML = ''; } };
+    
+    function showVipDatePicker(callback) {
+        const modalHtml = `<div id="vipDateModalOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10005;"></div><div class="vip-date-modal"><h3 style="color:var(--primary);">📅 VIP Start Date</h3><div><label>Select start date for this VIP membership:</label><input type="date" id="vipStartDate" value="${new Date().toISOString().split('T')[0]}" style="width:100%;padding:12px;margin:10px 0;border-radius:12px;"></div><div style="display:flex;gap:12px;margin-top:20px;"><button id="confirmVipDateBtn" class="btn-primary">Confirm & Continue</button><button id="cancelVipDateBtn" class="delete-btn">Cancel</button></div></div>`;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        document.getElementById('confirmVipDateBtn').onclick = () => { let startDate = document.getElementById('vipStartDate').value; document.getElementById('vipDateModalOverlay')?.remove(); document.querySelector('.vip-date-modal')?.remove(); callback(startDate); };
+        document.getElementById('cancelVipDateBtn').onclick = () => { document.getElementById('vipDateModalOverlay')?.remove(); document.querySelector('.vip-date-modal')?.remove(); callback(null); };
+        document.getElementById('vipDateModalOverlay').onclick = () => { document.getElementById('vipDateModalOverlay')?.remove(); document.querySelector('.vip-date-modal')?.remove(); callback(null); };
+    }
+    
+    async function processVipSale(customer, product, amount, startDate) {
+        if(!startDate) return false;
+        let existing = subscriptions.find(s => s.customer_phone === customer.phone && s.status !== 'unsubscribed');
+        let renewalDate = new Date(startDate);
+        renewalDate.setMonth(renewalDate.getMonth() + 1);
+        const tableName = getTableName('subscriptions');
+        
+        if(existing && confirm(`${customer.name} already has a VIP membership. Would you like to renew it instead?`)){
+            const { error } = await supabase.from(tableName).update({ 
+                start_date: startDate, 
+                renewal_date: renewalDate.toISOString().split('T')[0], 
+                status: 'active' 
+            }).eq('id', existing.id);
+            if (error) {
+                console.error('Renewal error:', error);
+                showNotification('Error renewing membership: ' + error.message);
+                return false;
+            }
+            await loadSubscriptions();
+            showNotification(`VIP membership renewed! New expiry: ${renewalDate.toLocaleDateString()}`);
+            return true;
+        } else if(!existing){
+            const { error } = await supabase.from(tableName).insert([{ 
+                customer_name: customer.name, 
+                customer_phone: customer.phone, 
+                product_name: product, 
+                amount: amount, 
+                start_date: startDate,
+                date_paid: startDate,
+                renewal_date: renewalDate.toISOString().split('T')[0], 
+                status: 'active', 
+                created_at: new Date().toISOString() 
+            }]);
+            if (error) {
+                console.error('Insert error:', error);
+                showNotification('Error creating membership: ' + error.message);
+                return false;
+            }
+            await loadSubscriptions();
+            showNotification(`VIP membership created! Start date: ${new Date(startDate).toLocaleDateString()}, Renewal date: ${renewalDate.toLocaleDateString()}`);
+            return true;
+        }
+        return false;
+    }
+    
+    async function completeSale(){
+        let total = parseFloat(document.getElementById('grandTotal').innerHTML), paid = parseFloat(document.getElementById('paymentAmount').value) || 0;
+        let method = document.querySelector('.method-btn.active')?.getAttribute('data-method') || 'Cash';
+        let bank = document.getElementById('bankName')?.value;
+        if(paid < total){ showNotification('Insufficient payment'); return; }
+        let receiptNum = 'RCP' + Date.now().toString().slice(-8);
+        let vipItem = cart.find(i => i.desc.toLowerCase().includes('vip'));
+        const transactionsTable = getTableName('transactions');
+        
+        if(vipItem){
+            showVipDatePicker(async (startDate) => {
+                if(!startDate) { showNotification('VIP sale cancelled - no start date selected'); return; }
+                let transaction = { receipt_number: receiptNum, customer_phone: saleCustomer.phone, customer_name: saleCustomer.name, cashier: currentUser.username, items: cart.map(i => ({ sku: i.sku, description: i.desc, quantity: i.qty, current_price: i.price, total: i.price * i.qty })), subtotal_excl_vat: parseFloat(document.getElementById('subtotalExcl').innerHTML), vat_amount: parseFloat(document.getElementById('vatAmount').innerHTML), total, cash_paid: method === 'Cash' ? paid : 0, card_paid: method === 'Card' ? paid : 0, eft_paid: method === 'EFT' ? paid : 0, change_due: paid - total, payment_details: method === 'EFT' ? `Bank: ${bank}` : '', date: new Date().toISOString() };
+                await supabase.from(transactionsTable).insert([transaction]);
+                await processVipSale(saleCustomer, vipItem.desc, vipItem.price, startDate);
+                await loadTransactions();
+                await loadSubscriptions();
+                document.getElementById('receiptContent').innerHTML = `<pre>${generateReceiptText(transaction)}</pre>`;
+                document.getElementById('receiptModal').style.display = 'flex';
+                resetSale();
+                showNotification('✓ Sale completed successfully!');
+            });
+        } else {
+            let transaction = { receipt_number: receiptNum, customer_phone: saleCustomer.phone, customer_name: saleCustomer.name, cashier: currentUser.username, items: cart.map(i => ({ sku: i.sku, description: i.desc, quantity: i.qty, current_price: i.price, total: i.price * i.qty })), subtotal_excl_vat: parseFloat(document.getElementById('subtotalExcl').innerHTML), vat_amount: parseFloat(document.getElementById('vatAmount').innerHTML), total, cash_paid: method === 'Cash' ? paid : 0, card_paid: method === 'Card' ? paid : 0, eft_paid: method === 'EFT' ? paid : 0, change_due: paid - total, payment_details: method === 'EFT' ? `Bank: ${bank}` : '', date: new Date().toISOString() };
+            await supabase.from(transactionsTable).insert([transaction]);
+            await loadTransactions();
+            document.getElementById('receiptContent').innerHTML = `<pre>${generateReceiptText(transaction)}</pre>`;
+            document.getElementById('receiptModal').style.display = 'flex';
+            resetSale();
+            showNotification('✓ Sale completed successfully!');
+        }
+    }
+    
+    function generateReceiptText(t){ return `================================\n${currentBusiness.toUpperCase()}\n================================\nReceipt: ${t.receipt_number}\nDate: ${new Date(t.date).toLocaleString()}\nCashier: ${t.cashier}\n--------------------------------\nCustomer: ${t.customer_name}\n--------------------------------\n${t.items.map(i => `${i.description} x${i.quantity} = R${(i.current_price * i.quantity).toFixed(2)}`).join('\n')}\n--------------------------------\nSubtotal: R${t.subtotal_excl_vat.toFixed(2)}\nVAT: R${t.vat_amount.toFixed(2)}\nTOTAL: R${t.total.toFixed(2)}\nPaid: R${(t.cash_paid + t.card_paid + t.eft_paid).toFixed(2)}\nChange: R${t.change_due.toFixed(2)}\n================================\nTHANK YOU!\n================================`; }
+    
+    window.viewReceipt = async(id) => { 
+        const tableName = getTableName('transactions');
+        let {data} = await supabase.from(tableName).select('*').eq('id', id).single(); 
+        if(data){ document.getElementById('receiptContent').innerHTML = `<pre>${generateReceiptText(data)}</pre>`; document.getElementById('receiptModal').style.display = 'flex'; } 
+    };
+    
+    window.deleteTransaction = async (tid, phone) => { 
+        if(currentUser?.role !== 'admin'){ let pwd = prompt("Admin password:"); if(pwd !== "Sh@rlene1984"){ showNotification("Access denied"); return; } }
+        if(confirm('Delete transaction?')){ 
+            const tableName = getTableName('transactions');
+            await supabase.from(tableName).delete().eq('id', tid); 
+            await loadTransactions(); 
+            if(phone) viewProfile(phone); 
+            showNotification('Transaction deleted'); 
+        } 
+    };
+    
+    function resetSale(){ cart = []; saleCustomer = null; document.getElementById('saleCustomerSection').style.display = 'block'; document.getElementById('saleProductsSection').style.display = 'none'; document.getElementById('salePaymentSection').style.display = 'none'; updateCart(); }
+    
+    window.selectSaleCustomer = (phone) => { 
+        saleCustomer = customers.find(c => c.phone === phone); 
+        document.getElementById('saleCustomerSection').style.display = 'none'; 
+        document.getElementById('saleProductsSection').style.display = 'block'; 
+        document.getElementById('currentCustomerInfo').innerHTML = `<strong>✓ Customer Selected</strong><br>👤 ${saleCustomer.name}<br>📞 ${saleCustomer.phone}<br>✉️ ${saleCustomer.email || 'No email'}`; 
+    };
+    
+    function initPaymentMethods(){
+        document.querySelectorAll('.method-btn').forEach(btn => {
+            btn.addEventListener('click', function(){
+                document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById('bankField').style.display = this.getAttribute('data-method') === 'EFT' ? 'block' : 'none';
+            });
+        });
+        document.querySelector('.method-btn[data-method="Cash"]')?.classList.add('active');
+    }
+    
+    document.getElementById('loginBtn').onclick = async() => { 
+        let business = document.querySelector('input[name="business"]:checked').value, un = document.getElementById('loginUsername').value, pw = document.getElementById('loginPassword').value;
+        if(!un || !pw){ showNotification('Enter credentials'); return; }
+        await initSupabase();
+        let {data} = await supabase.from('users').select('*').eq('username', un).eq('password', pw);
+        if(!data || data.length === 0){ showNotification('Invalid credentials!'); return; }
+        currentBusiness = business; currentUser = data[0];
+        document.body.className = business === 'ultron' ? 'ultron-mode' : 'giftedly-mode';
+        document.getElementById('businessIcon').src = LOGOS[currentBusiness] || '';
+        document.getElementById('businessName').innerHTML = business === 'ultron' ? '🔴 Ultron Trading Solutions' : '🔵 Giftedly';
+        
+        document.getElementById('statusBox').innerHTML = 'Loading data... <span class="loading-spinner"></span>';
+        
+        await Promise.all([loadCustomers(), loadProducts(), loadTransactions(), loadInvestors(), loadSubscriptions(), loadInvestorAccount(), loadWhatsAppMessages()]);
+        document.querySelectorAll('.admin-only').forEach(el => el.style.display = currentUser.role === 'admin' ? 'block' : 'none');
+        document.querySelectorAll('.ultron-only-tab').forEach(el => el.style.display = business === 'ultron' ? 'block' : 'none');
+        document.getElementById('userRoleDisplay').innerHTML = `👤 ${un} (${currentUser.role})`;
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('posSystem').style.display = 'block';
+        resetSale();
+        initPaymentMethods();
+        if(currentUser.role === 'admin') loadUsers();
+        
+        // Display all customers when customer-profile tab is clicked
+        displayAllCustomers();
+        
+        showNotification(`Welcome ${un}! ${customers.length} customers, ${products.length} products loaded.`);
+    };
+    
+    function logout(){ document.getElementById('posSystem').style.display = 'none'; document.getElementById('loginPage').style.display = 'flex'; currentUser = null; }
+    document.getElementById('logoutBtn').onclick = logout;
+    
+    document.getElementById('saleCustomerSearch').addEventListener('input', e => { 
+        let val = e.target.value; 
+        if(val.length < 2) { document.getElementById('saleCustomerResults').innerHTML = '<div>Type at least 2 characters...</div>'; return; }
+        let f = customers.filter(c => c.name.toLowerCase().includes(val.toLowerCase()) || c.phone.includes(val)); 
+        if(f.length === 0) {
+            document.getElementById('saleCustomerResults').innerHTML = '<div>No customers found. Try a different search or add a new customer.</div>';
+        } else {
+            document.getElementById('saleCustomerResults').innerHTML = f.map(c => `<div class="result-item" onclick="selectSaleCustomer('${c.phone}')"><strong>${c.name}</strong><br>📞 ${c.phone}</div>`).join('');
+        }
+    });
+    
+    document.getElementById('saleProductSearch').addEventListener('input', e => { 
+        let val = e.target.value; 
+        if(val.length < 2) { document.getElementById('saleProductResults').innerHTML = '<div>Type at least 2 characters...</div>'; return; }
+        let f = products.filter(p => p.sku.toLowerCase().includes(val.toLowerCase()) || p.description.toLowerCase().includes(val.toLowerCase())); 
+        if(f.length === 0) {
+            document.getElementById('saleProductResults').innerHTML = '<div>No products found. Add products in Admin panel.</div>';
+        } else {
+            document.getElementById('saleProductResults').innerHTML = f.map(p => `<div class="result-item" onclick="addToCart('${p.sku}')"><strong>${p.sku}</strong> - ${p.description}<br>R${p.price_inc_vat.toFixed(2)}</div>`).join('');
+        }
+    });
+    
+    document.getElementById('proceedToTenderBtn').onclick = () => { if(!cart.length){ showNotification('Cart empty'); return; } document.getElementById('saleProductsSection').style.display = 'none'; document.getElementById('salePaymentSection').style.display = 'block'; let total = parseFloat(document.getElementById('grandTotal').innerHTML); document.getElementById('tenderTotalDisplay').innerHTML = `R${total.toFixed(2)}`; document.getElementById('tenderChangeAmount').innerHTML = `R0.00`; document.getElementById('paymentAmount').value = ''; initPaymentMethods(); };
+    document.getElementById('completeTenderBtn').onclick = completeSale;
+    document.getElementById('backToCartBtn').onclick = () => { document.getElementById('salePaymentSection').style.display = 'none'; document.getElementById('saleProductsSection').style.display = 'block'; };
+    document.getElementById('clearSaleBtn').onclick = resetSale;
+    document.getElementById('whatsappBroadcastBtn').onclick = () => sendBulkReminders();
+    document.getElementById('whatsappBroadcastCustomerBtn').onclick = () => openBroadcastModal();
+    
+    document.getElementById('paymentAmount').addEventListener('input', () => { let total = parseFloat(document.getElementById('grandTotal').innerHTML) || 0, amt = parseFloat(document.getElementById('paymentAmount').value) || 0, change = amt - total; document.getElementById('tenderChangeAmount').innerHTML = change >= 0 ? `R${change.toFixed(2)}` : `R-${Math.abs(change).toFixed(2)}`; document.getElementById('tenderChangeAmount').style.color = change < 0 ? '#ffcccc' : 'white'; });
+    
+    document.getElementById('createCustomerBtn').onclick = async() => { 
+        let name = document.getElementById('newCustomerName').value, phone = document.getElementById('newCustomerPhone').value; 
+        if(!name || !phone){ showNotification('Name and phone required'); return; } 
+        const tableName = getTableName('customers');
+        const { error } = await supabase.from(tableName).insert([{ 
+            name, phone, 
+            email: document.getElementById('newCustomerEmail').value, 
+            id_number: document.getElementById('newCustomerIdNumber').value, 
+            since_date: document.getElementById('newCustomerSince').value || new Date().toISOString().split('T')[0]
+        }]); 
+        if(error) { showNotification('Error creating customer: ' + error.message); return; }
+        await loadCustomers(); 
+        showNotification('Customer created'); 
+        document.getElementById('newCustomerName').value = ''; document.getElementById('newCustomerPhone').value = ''; document.getElementById('newCustomerEmail').value = ''; document.getElementById('newCustomerIdNumber').value = ''; 
+        // Refresh customer list
+        displayAllCustomers();
+    };
+    
+    // Updated customer search input handler
+    document.getElementById('customerSearchInput').addEventListener('input', e => { 
+        let val = e.target.value; 
+        searchCustomers(val);
+    });
+    
+    window.viewProfile = async(phone) => { 
+        let c = customers.find(c => c.phone === phone); 
+        if(!c) return; 
+        const transactionsTable = getTableName('transactions');
+        const subscriptionsTable = getTableName('subscriptions');
+        let {data: hist} = await supabase.from(transactionsTable).select('*').eq('customer_phone', phone).order('date', {ascending: false}); 
+        let {data: subs} = await supabase.from(subscriptionsTable).select('*').eq('customer_phone', phone); 
+        document.getElementById('viewCustomerInfo').innerHTML = `<strong>${c.name}</strong><br>📞 ${c.phone}<br>✉️ ${c.email || 'N/A'}<br>🆔 ${c.id_number || 'N/A'}<br>📅 Since: ${c.since_date}<br><button onclick="sendCustomerWhatsApp('${c.name}','${c.phone}')" class="whatsapp-btn" style="margin-top:10px;">📱 WhatsApp</button>`; 
+        document.getElementById('editName').value = c.name; document.getElementById('editPhone').value = c.phone; document.getElementById('editEmail').value = c.email || ''; document.getElementById('editIdNumber').value = c.id_number || ''; document.getElementById('editSinceDate').value = c.since_date || ''; 
+        document.getElementById('customerHistoryList').innerHTML = hist?.map(t => `<div class="compact-row"><span>🧾 ${t.receipt_number} | R${t.total.toFixed(2)}</span><button onclick="deleteTransaction(${t.id},'${phone}')" class="delete-btn">Delete</button></div>`).join('') || '<div>No purchases</div>'; 
+        document.getElementById('customerSubscriptionsList').innerHTML = subs?.map(s => `<div class="compact-row">👑 ${s.product_name} - R${s.amount} - ${s.status}</div>`).join('') || '<div>No VIP</div>'; 
+        document.getElementById('customerViewDetails').style.display = 'block'; 
+        window.currentProfilePhone = phone; 
+    };
+    
+    document.getElementById('deleteCustomerBtn').onclick = async() => { 
+        if(confirm('Delete customer?')){ 
+            const customersTable = getTableName('customers');
+            const transactionsTable = getTableName('transactions');
+            const subscriptionsTable = getTableName('subscriptions');
+            await supabase.from(transactionsTable).delete().eq('customer_phone', window.currentProfilePhone); 
+            await supabase.from(subscriptionsTable).delete().eq('customer_phone', window.currentProfilePhone); 
+            await supabase.from(customersTable).delete().eq('phone', window.currentProfilePhone); 
+            await loadCustomers(); 
+            document.getElementById('customerViewDetails').style.display = 'none'; 
+            showNotification('Customer deleted'); 
+            displayAllCustomers();
+        } 
+    };
+    
+    document.getElementById('showEditFormBtn').onclick = () => { document.getElementById('editCustomerForm').style.display = 'block'; };
+    document.getElementById('cancelEditBtn').onclick = () => { document.getElementById('editCustomerForm').style.display = 'none'; };
+    document.getElementById('saveEditBtn').onclick = async() => { 
+        const customersTable = getTableName('customers');
+        await supabase.from(customersTable).update({ name: document.getElementById('editName').value, phone: document.getElementById('editPhone').value, email: document.getElementById('editEmail').value, id_number: document.getElementById('editIdNumber').value, since_date: document.getElementById('editSinceDate').value }).eq('phone', window.currentProfilePhone); 
+        await loadCustomers(); 
+        viewProfile(document.getElementById('editPhone').value); 
+        showNotification('Customer updated'); 
+        displayAllCustomers();
+    };
+    
+    document.getElementById('createUserBtn').onclick = async() => { 
+        let un = document.getElementById('newUsername').value, pw = document.getElementById('newPassword').value, role = document.getElementById('newUserRole').value; 
+        if(un && pw) await supabase.from('users').insert([{ username: un, password: pw, role }]); 
+        await loadUsers(); 
+        showNotification('User created'); 
+    };
+    
+    document.getElementById('createProductBtn').onclick = async() => { 
+        let sku = document.getElementById('newProductSku').value, desc = document.getElementById('newProductDesc').value, price = parseFloat(document.getElementById('newProductPrice').value); 
+        if(sku && desc && price) {
+            const productsTable = getTableName('products');
+            await supabase.from(productsTable).insert([{ sku, description: desc, price_inc_vat: price }]); 
+        }
+        await loadProducts(); 
+        showNotification('Product added'); 
+        document.getElementById('newProductSku').value = ''; document.getElementById('newProductDesc').value = ''; document.getElementById('newProductPrice').value = ''; 
+    };
+    
+    document.getElementById('applyFilterBtn').onclick = () => renderTransactions();
+    document.getElementById('clearFilterBtn').onclick = () => { document.getElementById('filterDateFrom').value = ''; document.getElementById('filterDateTo').value = ''; document.getElementById('filterPaymentMethod').value = ''; renderTransactions(); };
+    document.getElementById('applyVipFilterBtn').onclick = () => renderSubscriptions();
+    document.getElementById('clearVipFilterBtn').onclick = () => { document.getElementById('vipDateFrom').value = ''; document.getElementById('vipDateTo').value = ''; document.getElementById('subscriptionSearch').value = ''; document.getElementById('subscriptionFilter').value = 'all'; renderSubscriptions(); };
+    
+    document.getElementById('payrollEmployeesTab').onclick = () => { document.getElementById('payrollEmployeesSection').style.display = 'block'; document.getElementById('payrollRunSection').style.display = 'none'; document.getElementById('investorAccountSection').style.display = 'none'; };
+    document.getElementById('payrollRunTab').onclick = () => { document.getElementById('payrollEmployeesSection').style.display = 'none'; document.getElementById('payrollRunSection').style.display = 'block'; document.getElementById('investorAccountSection').style.display = 'none'; let html = ''; investors.forEach(i => { html += `<div class="compact-row"><span><strong>${i.name}</strong></span><input type="number" id="share_${i.id}" placeholder="Amount" step="0.01" oninput="updateProfitSummary()" style="width:150px;padding:8px;border-radius:10px;"></div>`; }); document.getElementById('payrollWageList').innerHTML = html || '<div>No investors</div>'; updateProfitSummary(); };
+    document.getElementById('investorAccountBtn').onclick = () => { document.getElementById('payrollEmployeesSection').style.display = 'none'; document.getElementById('payrollRunSection').style.display = 'none'; document.getElementById('investorAccountSection').style.display = 'block'; };
+    document.getElementById('runPayrollBtn').onclick = async() => { let totalShare = 0, entries = []; for(let inv of investors){ let input = document.getElementById(`share_${inv.id}`); let share = parseFloat(input?.value) || 0; if(share > 0){ totalShare += share; entries.push({ investorId: inv.id, amount: share }); } } let capital = parseFloat(document.getElementById('profitCapital')?.innerHTML) || 0; if(totalShare > capital){ showNotification('Exceeds capital'); return; } if(totalShare === 0){ showNotification('No amounts'); return; } 
+        const paymentsTable = getTableName('investor_payments');
+        for(let e of entries) await supabase.from(paymentsTable).insert([{ investor_id: e.investorId, amount: e.amount, date: new Date().toISOString(), receipt_number: 'PRF' + Date.now() }]); 
+        await loadInvestorPayments(); renderInvestors(); showNotification(`Processed R${totalShare.toFixed(2)}`); 
+    };
+    document.getElementById('autoDistributeBtn').onclick = () => { let capital = parseFloat(document.getElementById('profitCapital')?.innerHTML) || 0; if(investors.length === 0 || capital <= 0) return; let share = capital / investors.length; investors.forEach(i => { let inp = document.getElementById(`share_${i.id}`); if(inp) inp.value = share.toFixed(2); }); updateProfitSummary(); showNotification(`Divided equally: R${share.toFixed(2)} each`); };
+    
+    window.calculateProfitCapital = function(){ let withdrawn = parseFloat(document.getElementById('profitWithdrawn')?.value) || 0, percent = parseFloat(document.getElementById('adminCommissionPercent')?.value) || 0, commission = withdrawn * (percent / 100), capital = withdrawn - commission; if(capital < 0) capital = 0; document.getElementById('profitCapital').innerHTML = capital.toFixed(2); updateProfitSummary(); };
+    window.updateProfitSummary = function(){ let totalShare = 0; investors.forEach(i => { let val = parseFloat(document.getElementById(`share_${i.id}`)?.value) || 0; totalShare += val; }); document.getElementById('totalWages').innerHTML = totalShare.toFixed(2); let capital = parseFloat(document.getElementById('profitCapital')?.innerHTML) || 0; document.getElementById('remainingBalance').innerHTML = (capital - totalShare).toFixed(2); };
+    document.getElementById('saveInvestorAccountBtn').onclick = saveInvestorAccount;
+    document.getElementById('addEmployeeBtn').onclick = async() => { let name = prompt('Investor name:'); if(name) {
+        const investorsTable = getTableName('investors');
+        await supabase.from(investorsTable).insert([{ name }]); 
+        await loadInvestors(); 
+    }};
+    
+    async function loadUsers(){ if(currentUser?.role !== 'admin') return; let {data} = await supabase.from('users').select('*'); document.getElementById('userList').innerHTML = data?.map(u => `<div class="compact-row">${u.username} (${u.role})${u.username !== currentUser.username ? `<button onclick="deleteUser('${u.username}')" class="delete-btn">Delete</button>` : ''}</div>`).join('') || '<div>No users</div>'; }
+    window.deleteUser = async(un) => { if(confirm('Delete user?')){ await supabase.from('users').delete().eq('username', un); await loadUsers(); showNotification('User deleted'); } };
+    
+    document.getElementById('printReceiptBtn').onclick = () => { let w = window.open(); w.document.write(`<pre style="font-family:monospace;padding:20px;">${document.getElementById('receiptContent').innerText}</pre>`); w.print(); };
+    document.getElementById('closeReceiptBtn').onclick = () => { document.getElementById('receiptModal').style.display = 'none'; };
+    
+    document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        let tabId = tab.dataset.tab;
+        document.getElementById(tabId).classList.add('active');
+        if(tabId === 'transactions') renderTransactions();
+        else if(tabId === 'vip-subscriptions') renderSubscriptions();
+        else if(tabId === 'customer-profile') { 
+            renderWhatsAppMessages(); 
+            document.getElementById('customerViewDetails').style.display = 'none';
+            // Reset search input and show all customers
+            document.getElementById('customerSearchInput').value = '';
+            displayAllCustomers();
+        }
+        else if(tabId === 'search-product') renderProductCatalog();
+        else if(tabId === 'payroll') { renderInvestors(); document.getElementById('payrollEmployeesSection').style.display = 'block'; document.getElementById('payrollRunSection').style.display = 'none'; document.getElementById('investorAccountSection').style.display = 'none'; }
+        else if(tabId === 'admin-panel' && currentUser?.role === 'admin') { renderAdminProducts(); loadUsers(); }
+    }));
+    
+    initSupabase();
+})();
+</script>
 </body>
 </html>
