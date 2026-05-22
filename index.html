@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#1E90FF">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>POS | Ultron · Giftedly</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -124,6 +128,50 @@
         
         .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: var(--primary); animation: spin 1s ease-in-out infinite; margin-left: 10px; }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    /* Make buttons bigger for touch */
+    button, .btn-primary, .btn-clear, .edit-btn, .delete-btn {
+        min-height: 44px;
+        padding: 12px 20px;
+        font-size: 16px;
+    }
+    
+    /* Make cart items easier to tap */
+    .cart-item, .result-item, .subscription-item {
+        padding: 15px;
+        margin-bottom: 12px;
+    }
+    
+    /* Make input fields bigger */
+    input, select, textarea {
+        font-size: 16px;
+        padding: 12px;
+    }
+    
+    /* Adjust tab bar for mobile */
+    .tab-bar {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+    }
+    
+    .tab {
+        flex-shrink: 0;
+    }
+    
+    /* Make payment screen full width */
+    .payment-card {
+        padding: 20px;
+    }
+    
+    .payment-amount-display .amount {
+        font-size: 2.5rem;
+    }
+}
+
     </style>
 </head>
 <body id="mainBody">
