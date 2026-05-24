@@ -8,8 +8,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>POS | Ultron · Giftedly</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <style>  
-      * { margin: 0; padding: 0; box-sizing: border-box; }
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; min-height: 100vh; background: #0f172a; }
         
         body.ultron-mode {
@@ -58,13 +58,13 @@
         .logo { display: flex; align-items: center; gap: 14px; }
         .logo-img { width: 48px; height: 48px; border-radius: 14px; object-fit: cover; background: #334155; }
         .logo h1 { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
-        .user-info { display: flex; align-items: center; gap: 20px; color: var(--text-light); }
-        .user-info button { background: #ef4444; padding: 8px 20px; border-radius: 40px; border: none; color: white; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: 0.2s; }
+        .user-info { display: flex; align-items: center; gap: 12px; color: var(--text-light); }
+        .user-info button { background: #ef4444; padding: 6px 15px; border-radius: 40px; border: none; color: white; font-weight: 600; cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
         .user-info button:hover { background: #dc2626; }
+        #refreshBtn { background: #1E90FF; padding: 6px 12px; font-size: 0.75rem; }
+        #refreshBtn:hover { background: #187bcd; }
         
-        .hamburger-btn {
-            display: none;
-        }
+        .hamburger-btn { display: none; }
         
         .tab-bar {
             background: var(--bg-card);
@@ -148,12 +148,75 @@
         .investor-detail-label { width: 140px; font-weight: 600; color: var(--primary); }
         .investor-detail-value { flex: 1; color: var(--text-light); }
         
-        .vip-date-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-card); border-radius: 28px; padding: 28px; width: 380px; border: 1px solid #334155; z-index: 10001; }
+        .vip-date-modal { 
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            background: #1e293b; 
+            border-radius: 28px; 
+            padding: 28px; 
+            width: 380px; 
+            border: 1px solid #334155; 
+            z-index: 10001;
+            color: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .vip-date-modal h3 { color: var(--primary); margin-bottom: 20px; }
+        .vip-date-modal label { color: var(--text-light); display: block; margin-bottom: 8px; }
+        .vip-date-modal input { 
+            width: 100%; 
+            padding: 12px; 
+            border-radius: 12px; 
+            border: 1px solid #334155; 
+            background: #0f172a; 
+            color: white;
+            font-size: 16px;
+        }
+        .vip-date-modal input:focus { outline: none; border-color: var(--primary); }
+        .vip-date-modal .button-group { display: flex; gap: 12px; margin-top: 20px; }
+        .vip-date-modal .btn-primary { flex: 1; text-align: center; }
+        .vip-date-modal .delete-btn { flex: 1; text-align: center; }
+        
+        .alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 20000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .alert-box {
+            background: #1e293b;
+            border-radius: 28px;
+            padding: 28px;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid #334155;
+            color: white;
+        }
+        .alert-box h3 { color: var(--primary); margin-bottom: 16px; }
+        .alert-box p { margin-bottom: 20px; line-height: 1.5; }
+        .alert-buttons { display: flex; gap: 12px; justify-content: flex-end; }
+        .alert-buttons button { padding: 10px 20px; border-radius: 40px; border: none; cursor: pointer; font-weight: 600; }
         
         .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: var(--primary); animation: spin 1s ease-in-out infinite; margin-left: 10px; }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        /* Mobile Styles - ONLY show hamburger, hide tabs */
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .filter-group label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
         @media (max-width: 768px) {
             .hamburger-btn {
                 display: flex;
@@ -189,9 +252,7 @@
                 overflow-y: auto;
             }
             
-            .tab-bar.active {
-                display: flex !important;
-            }
+            .tab-bar.active { display: flex !important; }
             
             .tab {
                 padding: 12px 16px;
@@ -201,32 +262,12 @@
                 font-size: 14px;
             }
             
-            .container {
-                padding: 12px;
-            }
-            
-            .header {
-                padding: 12px 16px;
-                margin-bottom: 12px;
-            }
-            
-            .logo h1 {
-                font-size: 1.2rem;
-            }
-            
-            .logo-img {
-                width: 36px;
-                height: 36px;
-            }
-            
-            .tab-content {
-                padding: 15px;
-            }
-            
-            h3 {
-                font-size: 1.1rem;
-                margin-bottom: 12px;
-            }
+            .container { padding: 12px; }
+            .header { padding: 12px 16px; margin-bottom: 12px; }
+            .logo h1 { font-size: 1.2rem; }
+            .logo-img { width: 36px; height: 36px; }
+            .tab-content { padding: 15px; }
+            h3 { font-size: 1.1rem; margin-bottom: 12px; }
             
             .result-item, .transaction-item, .cart-item, .investor-item, .subscription-item {
                 padding: 10px 12px;
@@ -238,80 +279,24 @@
                 font-size: 13px;
             }
             
-            .cart-total {
-                padding: 12px;
-                margin-top: 12px;
-            }
-            
-            .grand-total {
-                font-size: 1.3rem;
-            }
-            
-            .payment-card {
-                padding: 16px;
-            }
-            
-            .payment-amount-display .amount {
-                font-size: 2rem;
-            }
-            
-            .payment-input-wrapper input {
-                padding: 10px 16px;
-                font-size: 1.2rem;
-            }
-            
-            .method-btn {
-                padding: 8px;
-                font-size: 12px;
-            }
-            
-            .change-display {
-                padding: 12px;
-            }
-            
-            .change-display .change-amount {
-                font-size: 1.5rem;
-            }
-            
-            input, select, textarea {
-                padding: 8px 12px;
-                font-size: 14px;
-                margin-bottom: 8px;
-            }
-            
-            .search-box input {
-                padding: 10px 14px;
-            }
-            
-            .customer-details {
-                padding: 12px;
-                margin: 12px 0;
-            }
-            
-            .cart-item-info {
-                font-size: 13px;
-            }
-            
-            .cart-item-controls button {
-                width: 28px;
-                height: 28px;
-                font-size: 14px;
-            }
-            
-            .whatsapp-btn, .send-msg-btn {
-                padding: 4px 10px;
-                font-size: 11px;
-            }
-            
-            .compact-row {
-                gap: 8px;
-                margin-bottom: 8px;
-            }
-            
-            .price-modal, .vip-date-modal {
-                width: 90%;
-                padding: 16px;
-            }
+            .cart-total { padding: 12px; margin-top: 12px; }
+            .grand-total { font-size: 1.3rem; }
+            .payment-card { padding: 16px; }
+            .payment-amount-display .amount { font-size: 2rem; }
+            .payment-input-wrapper input { padding: 10px 16px; font-size: 1.2rem; }
+            .method-btn { padding: 8px; font-size: 12px; }
+            .change-display { padding: 12px; }
+            .change-display .change-amount { font-size: 1.5rem; }
+            input, select, textarea { padding: 8px 12px; font-size: 14px; margin-bottom: 8px; }
+            .search-box input { padding: 10px 14px; }
+            .customer-details { padding: 12px; margin: 12px 0; }
+            .cart-item-info { font-size: 13px; }
+            .cart-item-controls button { width: 28px; height: 28px; font-size: 14px; }
+            .whatsapp-btn, .send-msg-btn { padding: 4px 10px; font-size: 11px; }
+            .compact-row { gap: 8px; margin-bottom: 8px; }
+            .price-modal, .vip-date-modal { width: 90%; padding: 16px; }
+            .filter-group label { font-size: 0.7rem; }
+            .filter-group input, .filter-group select { padding: 6px 8px; font-size: 12px; }
         }
     </style>
 </head>
@@ -338,12 +323,12 @@
             </div>
             <div class="user-info">
                 <div id="userRoleDisplay"></div>
+                <button id="refreshBtn" title="Refresh Data">↻</button>
                 <button id="logoutBtn">Logout</button>
             </div>
         </div>
 
-<button class="hamburger-btn" id="hamburgerBtn">☰ Menu <span>▼</span></button>
-
+        <button class="hamburger-btn" id="hamburgerBtn">☰ Menu <span>▼</span></button>
 
         <div class="tab-bar">
             <button class="tab active" data-tab="new-sale">🛒 Sale</button>
@@ -413,10 +398,10 @@
         <div id="transactions" class="tab-content">
             <h3>📜 Transaction History</h3>
             <div class="compact-row">
-                <input type="date" id="filterDateFrom">
-                <input type="date" id="filterDateTo">
-                <select id="filterPaymentMethod"><option value="">All</option><option>Cash</option><option>Card</option><option>EFT</option></select>
-                <button id="applyFilterBtn" class="edit-btn">Filter</button>
+                <div class="filter-group"><label>📅 From:</label><input type="date" id="filterDateFrom" style="padding:6px;"></div>
+                <div class="filter-group"><label>📅 To:</label><input type="date" id="filterDateTo" style="padding:6px;"></div>
+                <div class="filter-group"><label>💳 Method:</label><select id="filterPaymentMethod" style="padding:6px;"><option value="">All</option><option>Cash</option><option>Card</option><option>EFT</option></select></div>
+                <button id="applyFilterBtn" class="edit-btn">Apply</button>
                 <button id="clearFilterBtn" class="delete-btn">Clear</button>
             </div>
             <div id="transactionResults" class="results-list"></div>
@@ -425,11 +410,11 @@
         <div id="vip-subscriptions" class="tab-content">
             <h3>👑 VIP Memberships <button id="whatsappBroadcastBtn" class="whatsapp-btn">📱 WhatsApp Reminders</button></h3>
             <div class="compact-row">
-                <input type="date" id="vipDateFrom">
-                <input type="date" id="vipDateTo">
-                <input type="text" id="subscriptionSearch" placeholder="Search">
-                <select id="subscriptionFilter"><option value="all">All</option><option value="active">Active</option><option value="overdue">Overdue</option><option value="unsubscribed">Unsubscribed</option></select>
-                <button id="applyVipFilterBtn" class="edit-btn">Filter</button>
+                <div class="filter-group"><label>📅 From:</label><input type="date" id="vipDateFrom" style="padding:6px;"></div>
+                <div class="filter-group"><label>📅 To:</label><input type="date" id="vipDateTo" style="padding:6px;"></div>
+                <input type="text" id="subscriptionSearch" placeholder="Search..." style="padding:6px; width:120px;">
+                <select id="subscriptionFilter" style="padding:6px;"><option value="all">All</option><option value="active">Active</option><option value="overdue">Overdue</option><option value="unsubscribed">Unsubscribed</option></select>
+                <button id="applyVipFilterBtn" class="edit-btn">Apply</button>
                 <button id="clearVipFilterBtn" class="delete-btn">Clear</button>
             </div>
             <div id="subscriptionList" class="results-list"></div>
@@ -565,14 +550,14 @@
 
 <div id="receiptModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); align-items:center; justify-content:center; z-index:1000;">
     <div class="modal-content" style="background:var(--bg-card); border-radius:28px; padding:28px; max-width:500px; width:90%;">
-        <div id="receiptContent" class="receipt-content" style="background:#0f172a; padding:20px; border-radius:16px; font-family:monospace; white-space:pre-wrap;"></div>
+        <div id="receiptContent" class="receipt-content" style="background:#0f172a; padding:20px; border-radius:16px; font-family:monospace; white-space:pre-wrap; color:white;"></div>
         <div class="compact-row" style="margin-top:20px;">
             <button id="printReceiptBtn" class="edit-btn">Print</button>
             <button id="closeReceiptBtn" class="delete-btn">Close</button>
         </div>
     </div>
 </div>
-<div id="notification" class="notification" style="position:fixed; top:20px; right:20px; background:var(--bg-card); padding:14px 28px; border-radius:50px; border-left:5px solid var(--primary); z-index:11000; display:none;"></div>
+<div id="notification" class="notification" style="position:fixed; top:20px; right:20px; background:var(--bg-card); padding:14px 28px; border-radius:50px; border-left:5px solid var(--primary); z-index:11000; display:none; color:white;"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -586,11 +571,6 @@
         ultron: 'https://i.postimg.cc/Z5Y8yw2C/uts-logo-bmp.jpg',
         giftedly: 'https://i.postimg.cc/tgrKrwwS/Whats-App-Image-2026-05-18-at-10-45-20-AM.jpg'
     };
-    
-    // Get table name based on current business
-    function getTableName(baseTable) {
-        return `${baseTable}_${currentBusiness}`;
-    }
     
     function showNotification(msg){ let n=document.getElementById('notification'); n.innerHTML=msg; n.style.display='block'; setTimeout(()=>n.style.display='none',3000);}
     
@@ -606,79 +586,104 @@
         window.open(whatsappUrl, '_blank');
     }
     
-    async function saveWhatsAppMessage(customerName, customerPhone, message) {
-        try {
-            const tableName = getTableName('whatsapp_messages');
-            const { error } = await supabase.from(tableName).insert([{
-                customer_name: customerName,
-                customer_phone: customerPhone,
-                message: message,
-                read: false,
-                created_at: new Date().toISOString()
-            }]);
-            if(error) console.error('Error saving message:', error);
-            else await loadWhatsAppMessages();
-        } catch(e) { console.error('Save error:', e); }
+    function getTableName(baseTable) {
+        return `${baseTable}_${currentBusiness}`;
     }
     
-    async function loadWhatsAppMessages() {
-        try {
-            const tableName = getTableName('whatsapp_messages');
-            const { data } = await supabase.from(tableName).select('*').order('created_at', { ascending: false });
-            if(data) { whatsappMessages = data; updateWhatsAppBadge(); renderWhatsAppMessages(); }
-        } catch(e) { console.error('Load messages error:', e); }
-    }
-    
-    async function markMessageRead(messageId) {
-        const tableName = getTableName('whatsapp_messages');
-        await supabase.from(tableName).update({ read: true }).eq('id', messageId);
-        await loadWhatsAppMessages();
-    }
-    
-    async function deleteWhatsAppMessage(messageId) {
-        const tableName = getTableName('whatsapp_messages');
-        await supabase.from(tableName).delete().eq('id', messageId);
-        await loadWhatsAppMessages();
-    }
-    
-    function updateWhatsAppBadge() {
-        const unreadCount = whatsappMessages.filter(m => !m.read).length;
-        const badge = document.getElementById('whatsappBadge');
-        const unreadSpan = document.getElementById('unreadCount');
-        const messagesSection = document.getElementById('whatsappMessagesSection');
-        if(unreadCount > 0) {
-            if(badge) { badge.style.display = 'inline-block'; badge.textContent = unreadCount; }
-            if(unreadSpan) unreadSpan.textContent = unreadCount;
-            if(messagesSection) messagesSection.style.display = 'block';
-        } else {
-            if(badge) badge.style.display = 'none';
-            if(unreadSpan) unreadSpan.textContent = '0';
-            if(messagesSection && (!whatsappMessages.length || whatsappMessages.every(m => m.read))) messagesSection.style.display = 'none';
-        }
-    }
-    
-    function renderWhatsAppMessages() {
-        const container = document.getElementById('whatsappMessagesList');
-        if(!container) return;
-        if(whatsappMessages.length === 0) { container.innerHTML = '<div style="padding:20px;text-align:center;">No messages</div>'; return; }
-        container.innerHTML = whatsappMessages.map(msg => `<div class="whatsapp-message-item" style="cursor:pointer;${!msg.read ? 'border-left-color:#25D366;border-left-width:4px;' : ''}">
-            <div class="sender">📱 ${msg.customer_name}</div>
-            <div class="time">${new Date(msg.created_at).toLocaleString()}</div>
-            <div>${msg.message}</div>
-            <div style="margin-top:8px;">
-                <button onclick="replyToWhatsApp('${msg.customer_phone}','${msg.customer_name}')" class="whatsapp-btn" style="font-size:0.7rem;">📱 Reply</button>
-                <button onclick="markMessageRead(${msg.id})" class="edit-btn" style="font-size:0.7rem;">✓ Mark Read</button>
-                <button onclick="deleteWhatsAppMessage(${msg.id})" class="delete-btn" style="font-size:0.7rem;">🗑️ Delete</button>
+    // VIP Date Picker
+    function showVipDatePicker(callback) {
+        const overlay = document.createElement('div');
+        overlay.className = 'alert-overlay';
+        overlay.style.zIndex = '10005';
+        
+        const modal = document.createElement('div');
+        modal.className = 'vip-date-modal';
+        
+        const today = new Date().toISOString().split('T')[0];
+        
+        modal.innerHTML = `
+            <h3 style="color:var(--primary);">📅 VIP Start Date</h3>
+            <div style="margin-bottom: 20px;">
+                <label>Select the start date for this VIP membership:</label>
+                <input type="date" id="vipStartDateInput" value="${today}" style="width:100%; padding:12px; border-radius:12px; background:#0f172a; color:white; border:1px solid #334155;">
+                <p style="font-size:12px; color:#94a3b8; margin-top:8px;">The membership will expire 30 days from this date.</p>
             </div>
-        </div>`).join('');
+            <div class="button-group">
+                <button id="vipConfirmBtn" class="btn-primary">Confirm</button>
+                <button id="vipCancelBtn" class="delete-btn">Cancel</button>
+            </div>
+        `;
+        
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+        
+        const dateInput = document.getElementById('vipStartDateInput');
+        const confirmBtn = document.getElementById('vipConfirmBtn');
+        const cancelBtn = document.getElementById('vipCancelBtn');
+        
+        const closeModal = () => { overlay.remove(); };
+        
+        confirmBtn.onclick = () => {
+            const selectedDate = dateInput.value;
+            if (selectedDate) {
+                closeModal();
+                callback(selectedDate);
+            } else {
+                alert('Please select a start date');
+            }
+        };
+        
+        cancelBtn.onclick = () => {
+            closeModal();
+            callback(null);
+        };
+        
+        overlay.onclick = (e) => {
+            if (e.target === overlay) {
+                closeModal();
+                callback(null);
+            }
+        };
     }
     
-    window.replyToWhatsApp = function(phone, name) {
-        let message = prompt(`Reply to ${name}:`, "Thank you for your message! How can we assist you?");
-        if(message) { sendWhatsApp(phone, message); showNotification(`Reply sent to ${name}`); }
-    };
-    window.markMessageRead = markMessageRead;
-    window.deleteWhatsAppMessage = deleteWhatsAppMessage;
+    function clearAllData() {
+        customers = [];
+        products = [];
+        transactions = [];
+        investors = [];
+        subscriptions = [];
+        investorPayments = [];
+        cart = [];
+        whatsappMessages = [];
+        
+        const elementsToClear = [
+            'customerSearchResults', 'customerViewDetails', 'transactionResults',
+            'subscriptionList', 'productSearchResults', 'employeeList',
+            'payrollWageList', 'userList', 'productList', 'cartItems',
+            'saleCustomerResults', 'saleProductResults', 'whatsappMessagesList'
+        ];
+        elementsToClear.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = '';
+        });
+        
+        const customerView = document.getElementById('customerViewDetails');
+        if (customerView) customerView.style.display = 'none';
+        
+        const subtotal = document.getElementById('subtotalExcl');
+        const vat = document.getElementById('vatAmount');
+        const grandTotal = document.getElementById('grandTotal');
+        if (subtotal) subtotal.innerHTML = '0.00';
+        if (vat) vat.innerHTML = '0.00';
+        if (grandTotal) grandTotal.innerHTML = '0.00';
+        
+        const saleCustomerSection = document.getElementById('saleCustomerSection');
+        const saleProductsSection = document.getElementById('saleProductsSection');
+        const salePaymentSection = document.getElementById('salePaymentSection');
+        if (saleCustomerSection) saleCustomerSection.style.display = 'block';
+        if (saleProductsSection) saleProductsSection.style.display = 'none';
+        if (salePaymentSection) salePaymentSection.style.display = 'none';
+    }
     
     async function initSupabase(){ 
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); 
@@ -688,45 +693,22 @@
     async function loadCustomers(){ 
         try {
             const tableName = getTableName('customers');
-            console.log('Loading from table:', tableName);
-            const { data, error } = await supabase
-                .from(tableName)
-                .select('*')
-                .order('name');
-            
+            const { data, error } = await supabase.from(tableName).select('*').order('name');
             if (error) throw error;
-            
-            if (data && data.length > 0) {
-                customers = data;
-                console.log(`Loaded ${customers.length} customers from Supabase`);
-            } else {
-                customers = [];
-                console.log('No customers found');
-            }
-            
-            const statusBox = document.getElementById('statusBox');
-            if (statusBox && customers.length > 0) {
-                statusBox.innerHTML = `✅ ${customers.length} customers loaded | Ready`;
-            }
-            
+            customers = data || [];
             return customers.length;
         } catch(e) { 
-            console.error('Load customers error:', e);
             customers = [];
             return 0;
         }
     }
     
-    // Function to display all customers alphabetically
     function displayAllCustomers() {
         if (customers.length === 0) {
             document.getElementById('customerSearchResults').innerHTML = '<div style="padding:20px;text-align:center;">No customers found. Add a new customer.</div>';
             return;
         }
-        
-        // Sort customers alphabetically by name
         const sortedCustomers = [...customers].sort((a, b) => a.name.localeCompare(b.name));
-        
         document.getElementById('customerSearchResults').innerHTML = sortedCustomers.map(c => 
             `<div class="result-item" onclick="viewProfile('${c.phone}')">
                 <strong>${c.name}</strong><br>
@@ -735,18 +717,15 @@
         ).join('');
     }
     
-    // Function to search customers
     function searchCustomers(searchTerm) {
         if (!searchTerm || searchTerm.length < 2) {
             displayAllCustomers();
             return;
         }
-        
         const filtered = customers.filter(c => 
             c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
             c.phone.includes(searchTerm)
         );
-        
         if (filtered.length === 0) {
             document.getElementById('customerSearchResults').innerHTML = '<div style="padding:20px;text-align:center;">No customers found matching your search.</div>';
         } else {
@@ -763,25 +742,13 @@
     async function loadProducts(){ 
         try {
             const tableName = getTableName('products');
-            const { data, error } = await supabase
-                .from(tableName)
-                .select('*');
-            
+            const { data, error } = await supabase.from(tableName).select('*');
             if (error) throw error;
-            
-            if (data && data.length > 0) {
-                products = data;
-                console.log(`Loaded ${products.length} products from Supabase`);
-            } else {
-                products = [];
-                console.log('No products found');
-            }
-            
+            products = data || [];
             renderProductCatalog(); 
             if(currentUser?.role === 'admin') renderAdminProducts();
             return products.length;
         } catch(e) { 
-            console.error('Load products error:', e);
             products = [];
             renderProductCatalog();
             return 0;
@@ -829,10 +796,7 @@
     async function loadTransactions(){ 
         try {
             const tableName = getTableName('transactions');
-            const { data } = await supabase
-                .from(tableName)
-                .select('*')
-                .order('date', {ascending: false}); 
+            const { data } = await supabase.from(tableName).select('*').order('date', {ascending: false}); 
             if(data) { transactions = data; renderTransactions(); }
         } catch(e) { console.error('Load transactions error:', e); }
     }
@@ -840,10 +804,7 @@
     async function loadSubscriptions(){ 
         try {
             const tableName = getTableName('subscriptions');
-            const { data } = await supabase
-                .from(tableName)
-                .select('*')
-                .order('created_at', {ascending: false}); 
+            const { data } = await supabase.from(tableName).select('*').order('created_at', {ascending: false}); 
             if(data) { subscriptions = data; renderSubscriptions(); }
         } catch(e) { console.error('Load subscriptions error:', e); }
     }
@@ -851,9 +812,7 @@
     async function loadInvestors(){ 
         try {
             const tableName = getTableName('investors');
-            const { data } = await supabase
-                .from(tableName)
-                .select('*'); 
+            const { data } = await supabase.from(tableName).select('*'); 
             if(data) { investors = data; await loadInvestorPayments(); renderInvestors(); }
         } catch(e) { console.error('Load investors error:', e); }
     }
@@ -861,9 +820,7 @@
     async function loadInvestorPayments(){ 
         try {
             const tableName = getTableName('investor_payments');
-            const { data } = await supabase
-                .from(tableName)
-                .select('*'); 
+            const { data } = await supabase.from(tableName).select('*'); 
             if(data) investorPayments = data;
         } catch(e) { console.error('Load payments error:', e); }
     }
@@ -873,10 +830,7 @@
     async function loadInvestorAccount() { 
         try {
             const tableName = getTableName('investor_accounts');
-            const { data } = await supabase
-                .from(tableName)
-                .select('*')
-                .single(); 
+            const { data } = await supabase.from(tableName).select('*').single(); 
             if(data) { 
                 document.getElementById('investorOpeningBalance').value = data.opening_balance_usd || 0; 
                 document.getElementById('investorCommissionsWithdrawn').value = data.commissions_withdrawn_usd || 0; 
@@ -890,7 +844,7 @@
         let from = document.getElementById('filterDateFrom')?.value, to = document.getElementById('filterDateTo')?.value, method = document.getElementById('filterPaymentMethod')?.value;
         if(from) f = f.filter(t => new Date(t.date) >= new Date(from));
         if(to) { let e = new Date(to); e.setHours(23,59,59); f = f.filter(t => new Date(t.date) <= e); }
-        if(method) f = f.filter(t => (method === 'Cash' ? t.cash_paid > 0 : method === 'Card' ? t.card_paid > 0 : method === 'EFT' ? t.eft_paid > 0 : true));
+        if(method && method !== '') f = f.filter(t => (method === 'Cash' ? t.cash_paid > 0 : method === 'Card' ? t.card_paid > 0 : method === 'EFT' ? t.eft_paid > 0 : true));
         document.getElementById('transactionResults').innerHTML = f.map(t => `<div class="transaction-item" onclick="viewReceipt(${t.id})"><strong>🧾 ${t.receipt_number}</strong> | ${new Date(t.date).toLocaleString()} | R${t.total.toFixed(2)}</div>`).join('') || '<div>No transactions</div>';
     }
     
@@ -931,10 +885,16 @@
     
     function renderSubscriptions(){ 
         let list = [...subscriptions], search = document.getElementById('subscriptionSearch')?.value.toLowerCase(), filter = document.getElementById('subscriptionFilter')?.value;
+        let fromDate = document.getElementById('vipDateFrom')?.value;
+        let toDate = document.getElementById('vipDateTo')?.value;
+        
         if(search) list = list.filter(s => s.customer_name.toLowerCase().includes(search));
+        if(fromDate) list = list.filter(s => new Date(s.start_date || s.date_paid) >= new Date(fromDate));
+        if(toDate) { let e = new Date(toDate); e.setHours(23,59,59); list = list.filter(s => new Date(s.start_date || s.date_paid) <= e); }
         if(filter === 'active') list = list.filter(s => s.status !== 'unsubscribed' && new Date(s.renewal_date) >= new Date());
         else if(filter === 'overdue') list = list.filter(s => s.status !== 'unsubscribed' && new Date(s.renewal_date) < new Date());
         else if(filter === 'unsubscribed') list = list.filter(s => s.status === 'unsubscribed');
+        
         document.getElementById('subscriptionList').innerHTML = list.map(s => {
             let isUnsubscribed = s.status === 'unsubscribed', isOverdue = !isUnsubscribed && new Date(s.renewal_date) < new Date(), needsReminderFlag = !isUnsubscribed && !isOverdue && needsReminder(s.renewal_date);
             let startDateDisplay = s.start_date ? new Date(s.start_date).toLocaleDateString() : (s.date_paid ? new Date(s.date_paid).toLocaleDateString() : 'N/A');
@@ -944,7 +904,7 @@
     
     window.sendReminder = function(subscriptionId, customerName, customerPhone, productName, renewalDate) {
         sendWhatsApp(customerPhone, `🔔 VIP REMINDER\n\nDear ${customerName},\n\nYour ${productName} VIP membership expires on ${new Date(renewalDate).toLocaleDateString()}.\n\nPlease renew to continue your benefits!\n\nThank you.`);
-        showNotification(`Reminder sent to ${customerName}`);
+        showNotification(`WhatsApp opened for ${customerName}`);
     };
     
     window.sendBulkReminders = function() {
@@ -952,7 +912,7 @@
         if(dueMembers.length === 0) { showNotification('No members due for renewal'); return; }
         if(confirm(`Send reminders to ${dueMembers.length} member(s)?`)) {
             dueMembers.forEach(m => sendWhatsApp(m.customer_phone, `🔔 VIP REMINDER\n\nDear ${m.customer_name},\n\nYour ${m.product_name} VIP membership expires on ${new Date(m.renewal_date).toLocaleDateString()}.\n\nPlease renew!\n\nThank you.`));
-            showNotification(`Sent to ${dueMembers.length} member(s)`);
+            showNotification(`WhatsApp opened for ${dueMembers.length} member(s)`);
         }
     };
     
@@ -980,9 +940,9 @@
         if(!message) { showNotification('Enter a message'); return; }
         document.querySelectorAll('#customerChecklist input:checked').forEach(cb => selected.push({ name: cb.getAttribute('data-name'), phone: cb.getAttribute('data-phone') }));
         if(selected.length === 0) { showNotification('Select customers'); return; }
-        if(confirm(`Send to ${selected.length} customer(s)?`)) {
+        if(confirm(`Send message to ${selected.length} customer(s)?`)) {
             selected.forEach(c => sendWhatsApp(c.phone, message));
-            showNotification(`Sent to ${selected.length} customer(s)`);
+            showNotification(`WhatsApp opened for ${selected.length} customer(s)`);
             document.getElementById('broadcastModal').style.display = 'none';
             document.getElementById('broadcastMessage').value = '';
         }
@@ -1008,7 +968,7 @@
         const inv = investors.find(i => i.id === id);
         if(!inv) return;
         const payments = investorPayments.filter(p => p.investor_id === id);
-        const modalHtml = `<div id="invDetailModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10002;display:flex;align-items:center;justify-content:center;"><div style="background:var(--bg-card);padding:28px;border-radius:28px;width:500px;max-height:85vh;overflow-y:auto;border:1px solid #334155;"><div><div style="display:flex;justify-content:space-between;margin-bottom:20px;"><h2 style="color:var(--primary);">${inv.name}</h2><button onclick="closeInvestorDetail()" class="delete-btn">Close</button></div><div class="customer-details"><div class="investor-detail-row"><span class="investor-detail-label">Bank:</span><span>${inv.bank_name || 'Not set'}</span></div><div class="investor-detail-row"><span class="investor-detail-label">Account:</span><span>${inv.account_number || 'Not set'}</span></div><div class="investor-detail-row"><span class="investor-detail-label">ID:</span><span>${inv.id_number || 'Not set'}</span></div><div class="investor-detail-row"><span class="investor-detail-label">Total:</span><span style="color:var(--primary);">R${getTotalPaid(id).toFixed(2)}</span></div></div><h4>Payment History</h4><div>${payments.length ? payments.map(p => `<div class="compact-row" style="padding:10px;border-bottom:1px solid #334155;"><span>R${p.amount} | ${new Date(p.date).toLocaleString()}</span><button onclick="deletePayment(${p.id},${id})" class="delete-btn">Delete</button></div>`).join('') : '<div>No history</div>'}</div><button onclick="closeInvestorDetail()" class="btn-primary" style="margin-top:15px;">Close</button></div></div></div>`;
+        const modalHtml = `<div id="invDetailModal" class="alert-overlay" style="z-index:10002;"><div style="background:var(--bg-card);border-radius:28px;padding:28px;width:500px;max-height:85vh;overflow-y:auto;border:1px solid #334155;"><div style="display:flex;justify-content:space-between;margin-bottom:20px;"><h2 style="color:var(--primary);">${inv.name}</h2><button onclick="closeInvestorDetail()" class="delete-btn">Close</button></div><div class="customer-details"><div class="investor-detail-row"><span class="investor-detail-label">Bank:</span><span>${inv.bank_name || 'Not set'}</span></div><div class="investor-detail-row"><span class="investor-detail-label">Account:</span><span>${inv.account_number || 'Not set'}</span></div><div class="investor-detail-row"><span class="investor-detail-label">ID:</span><span>${inv.id_number || 'Not set'}</span></div><div class="investor-detail-row"><span class="investor-detail-label">Total:</span><span style="color:var(--primary);">R${getTotalPaid(id).toFixed(2)}</span></div></div><h4>Payment History</h4><div>${payments.length ? payments.map(p => `<div class="compact-row" style="padding:10px;border-bottom:1px solid #334155;"><span>R${p.amount} | ${new Date(p.date).toLocaleString()}</span><button onclick="deletePayment(${p.id},${id})" class="delete-btn">Delete</button></div>`).join('') : '<div>No history</div>'}</div><button onclick="closeInvestorDetail()" class="btn-primary" style="margin-top:15px;">Close</button></div></div></div>`;
         document.body.insertAdjacentHTML('beforeend', modalHtml);
     };
     
@@ -1058,7 +1018,7 @@
     
     function showPriceModal(idx){
         const item = cart[idx];
-        const modalHtml = `<div id="priceModalOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10003;"></div><div class="price-modal" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg-card);border-radius:28px;padding:28px;width:380px;z-index:10004;"><h3>Modify: ${item.desc}</h3><div><label>Override Price (R):</label><input type="number" id="overridePrice" value="${item.price.toFixed(2)}" step="0.01"></div><div><label>Discount %:</label><input type="number" id="discountPercentItem" placeholder="1-100"></div><div style="display:flex;gap:12px;margin-top:20px;"><button id="applyOverrideBtn" class="btn-primary">Set Price</button><button id="applyItemDiscountBtn" class="edit-btn">Apply %</button><button id="closePriceModalBtn" class="delete-btn">Cancel</button></div></div>`;
+        const modalHtml = `<div id="priceModalOverlay" class="alert-overlay" style="z-index:10003;"></div><div class="price-modal" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--bg-card);border-radius:28px;padding:28px;width:380px;z-index:10004;border:1px solid #334155;"><h3 style="color:var(--primary);">Modify: ${item.desc}</h3><div><label style="color:white;">Override Price (R):</label><input type="number" id="overridePrice" value="${item.price.toFixed(2)}" step="0.01" style="background:#0f172a;color:white;"></div><div><label style="color:white;">Discount %:</label><input type="number" id="discountPercentItem" placeholder="1-100" style="background:#0f172a;color:white;"></div><div style="display:flex;gap:12px;margin-top:20px;"><button id="applyOverrideBtn" class="btn-primary">Set Price</button><button id="applyItemDiscountBtn" class="edit-btn">Apply %</button><button id="closePriceModalBtn" class="delete-btn">Cancel</button></div></div>`;
         document.body.insertAdjacentHTML('beforeend', modalHtml);
         document.getElementById('applyOverrideBtn').onclick = () => { let np = parseFloat(document.getElementById('overridePrice').value); if(np > 0){ cart[idx].price = np; cart[idx].price_excl = np/(1+VAT); cart[idx].discountPercent = 0; updateCart(); showNotification('Price updated'); closeModalPrice(); } };
         document.getElementById('applyItemDiscountBtn').onclick = () => { let dp = parseFloat(document.getElementById('discountPercentItem').value); if(dp > 0 && dp <= 100){ if(!cart[idx].originalPrice) cart[idx].originalPrice = cart[idx].price; cart[idx].price = cart[idx].originalPrice * (1 - dp/100); cart[idx].price_excl = cart[idx].price/(1+VAT); cart[idx].discountPercent = dp; updateCart(); showNotification(`${dp}% discount applied`); closeModalPrice(); } else alert('Enter 1-100'); };
@@ -1071,14 +1031,6 @@
     window.removeItem = (idx) => { cart.splice(idx,1); updateCart(); };
     window.addToCart = (sku) => { let p = products.find(pr => pr.sku === sku); if(p){ let ex = cart.find(i => i.sku === sku); if(ex) ex.qty++; else cart.push({sku: p.sku, desc: p.description, price: p.price_inc_vat, price_excl: p.price_inc_vat/(1+VAT), qty: 1, originalPrice: null, discountPercent: 0}); updateCart(); showNotification(`✓ ${p.description} added`); document.getElementById('saleProductSearch').value = ''; document.getElementById('saleProductResults').innerHTML = ''; } };
     
-    function showVipDatePicker(callback) {
-        const modalHtml = `<div id="vipDateModalOverlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10005;"></div><div class="vip-date-modal"><h3 style="color:var(--primary);">📅 VIP Start Date</h3><div><label>Select start date for this VIP membership:</label><input type="date" id="vipStartDate" value="${new Date().toISOString().split('T')[0]}" style="width:100%;padding:12px;margin:10px 0;border-radius:12px;"></div><div style="display:flex;gap:12px;margin-top:20px;"><button id="confirmVipDateBtn" class="btn-primary">Confirm & Continue</button><button id="cancelVipDateBtn" class="delete-btn">Cancel</button></div></div>`;
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-        document.getElementById('confirmVipDateBtn').onclick = () => { let startDate = document.getElementById('vipStartDate').value; document.getElementById('vipDateModalOverlay')?.remove(); document.querySelector('.vip-date-modal')?.remove(); callback(startDate); };
-        document.getElementById('cancelVipDateBtn').onclick = () => { document.getElementById('vipDateModalOverlay')?.remove(); document.querySelector('.vip-date-modal')?.remove(); callback(null); };
-        document.getElementById('vipDateModalOverlay').onclick = () => { document.getElementById('vipDateModalOverlay')?.remove(); document.querySelector('.vip-date-modal')?.remove(); callback(null); };
-    }
-    
     async function processVipSale(customer, product, amount, startDate) {
         if(!startDate) return false;
         let existing = subscriptions.find(s => s.customer_phone === customer.phone && s.status !== 'unsubscribed');
@@ -1089,11 +1041,11 @@
         if(existing && confirm(`${customer.name} already has a VIP membership. Would you like to renew it instead?`)){
             const { error } = await supabase.from(tableName).update({ 
                 start_date: startDate, 
+                date_paid: startDate,
                 renewal_date: renewalDate.toISOString().split('T')[0], 
                 status: 'active' 
             }).eq('id', existing.id);
             if (error) {
-                console.error('Renewal error:', error);
                 showNotification('Error renewing membership: ' + error.message);
                 return false;
             }
@@ -1113,7 +1065,6 @@
                 created_at: new Date().toISOString() 
             }]);
             if (error) {
-                console.error('Insert error:', error);
                 showNotification('Error creating membership: ' + error.message);
                 return false;
             }
@@ -1135,7 +1086,10 @@
         
         if(vipItem){
             showVipDatePicker(async (startDate) => {
-                if(!startDate) { showNotification('VIP sale cancelled - no start date selected'); return; }
+                if(!startDate) { 
+                    showNotification('VIP sale cancelled - no start date selected'); 
+                    return; 
+                }
                 let transaction = { receipt_number: receiptNum, customer_phone: saleCustomer.phone, customer_name: saleCustomer.name, cashier: currentUser.username, items: cart.map(i => ({ sku: i.sku, description: i.desc, quantity: i.qty, current_price: i.price, total: i.price * i.qty })), subtotal_excl_vat: parseFloat(document.getElementById('subtotalExcl').innerHTML), vat_amount: parseFloat(document.getElementById('vatAmount').innerHTML), total, cash_paid: method === 'Cash' ? paid : 0, card_paid: method === 'Card' ? paid : 0, eft_paid: method === 'EFT' ? paid : 0, change_due: paid - total, payment_details: method === 'EFT' ? `Bank: ${bank}` : '', date: new Date().toISOString() };
                 await supabase.from(transactionsTable).insert([transaction]);
                 await processVipSale(saleCustomer, vipItem.desc, vipItem.price, startDate);
@@ -1166,7 +1120,10 @@
     };
     
     window.deleteTransaction = async (tid, phone) => { 
-        if(currentUser?.role !== 'admin'){ let pwd = prompt("Admin password:"); if(pwd !== "Sh@rlene1984"){ showNotification("Access denied"); return; } }
+        if(currentUser?.role !== 'admin'){ 
+            let pwd = prompt("Admin password:"); 
+            if(pwd !== "Sh@rlene1984"){ showNotification("Access denied"); return; } 
+        }
         if(confirm('Delete transaction?')){ 
             const tableName = getTableName('transactions');
             await supabase.from(tableName).delete().eq('id', tid); 
@@ -1196,7 +1153,90 @@
         document.querySelector('.method-btn[data-method="Cash"]')?.classList.add('active');
     }
     
+    // ============ LOAD WHATSAPP MESSAGES SAFELY ============
+    async function loadWhatsAppMessages() {
+        try {
+            const tableName = getTableName('whatsapp_messages');
+            const { data } = await supabase.from(tableName).select('*').order('created_at', { ascending: false });
+            if(data) { 
+                whatsappMessages = data; 
+                updateWhatsAppBadge(); 
+                renderWhatsAppMessages(); 
+            }
+        } catch(e) { 
+            // Table might not exist, just ignore
+            console.log('WhatsApp messages table not found yet');
+            whatsappMessages = [];
+        }
+    }
+    
+    async function saveWhatsAppMessage(customerName, customerPhone, message) {
+        try {
+            const tableName = getTableName('whatsapp_messages');
+            await supabase.from(tableName).insert([{
+                customer_name: customerName,
+                customer_phone: customerPhone,
+                message: message,
+                read: false,
+                created_at: new Date().toISOString()
+            }]);
+            await loadWhatsAppMessages();
+        } catch(e) { console.error('Save error:', e); }
+    }
+    
+    async function markMessageRead(messageId) {
+        const tableName = getTableName('whatsapp_messages');
+        await supabase.from(tableName).update({ read: true }).eq('id', messageId);
+        await loadWhatsAppMessages();
+    }
+    
+    async function deleteWhatsAppMessage(messageId) {
+        const tableName = getTableName('whatsapp_messages');
+        await supabase.from(tableName).delete().eq('id', messageId);
+        await loadWhatsAppMessages();
+    }
+    
+    function updateWhatsAppBadge() {
+        const unreadCount = whatsappMessages.filter(m => !m.read).length;
+        const badge = document.getElementById('whatsappBadge');
+        const unreadSpan = document.getElementById('unreadCount');
+        const messagesSection = document.getElementById('whatsappMessagesSection');
+        if(unreadCount > 0) {
+            if(badge) { badge.style.display = 'inline-block'; badge.textContent = unreadCount; }
+            if(unreadSpan) unreadSpan.textContent = unreadCount;
+            if(messagesSection) messagesSection.style.display = 'block';
+        } else {
+            if(badge) badge.style.display = 'none';
+            if(unreadSpan) unreadSpan.textContent = '0';
+            if(messagesSection && (!whatsappMessages.length || whatsappMessages.every(m => m.read))) messagesSection.style.display = 'none';
+        }
+    }
+    
+    function renderWhatsAppMessages() {
+        const container = document.getElementById('whatsappMessagesList');
+        if(!container) return;
+        if(whatsappMessages.length === 0) { container.innerHTML = '<div style="padding:20px;text-align:center;">No messages</div>'; return; }
+        container.innerHTML = whatsappMessages.map(msg => `<div class="whatsapp-message-item" style="cursor:pointer;${!msg.read ? 'border-left-color:#25D366;border-left-width:4px;' : ''}">
+            <div class="sender">📱 ${msg.customer_name}</div>
+            <div class="time">${new Date(msg.created_at).toLocaleString()}</div>
+            <div>${msg.message}</div>
+            <div style="margin-top:8px;">
+                <button onclick="replyToWhatsApp('${msg.customer_phone}','${msg.customer_name}')" class="whatsapp-btn" style="font-size:0.7rem;">📱 Reply</button>
+                <button onclick="markMessageRead(${msg.id})" class="edit-btn" style="font-size:0.7rem;">✓ Mark Read</button>
+                <button onclick="deleteWhatsAppMessage(${msg.id})" class="delete-btn" style="font-size:0.7rem;">🗑️ Delete</button>
+            </div>
+        </div>`).join('');
+    }
+    
+    window.replyToWhatsApp = function(phone, name) {
+        let message = prompt(`Reply to ${name}:`, "Thank you for your message! How can we assist you?");
+        if(message) { sendWhatsApp(phone, message); showNotification(`WhatsApp opened for ${name}`); }
+    };
+    // ============================================
+    
     document.getElementById('loginBtn').onclick = async() => { 
+        clearAllData();
+        
         let business = document.querySelector('input[name="business"]:checked').value, un = document.getElementById('loginUsername').value, pw = document.getElementById('loginPassword').value;
         if(!un || !pw){ showNotification('Enter credentials'); return; }
         await initSupabase();
@@ -1219,13 +1259,27 @@
         initPaymentMethods();
         if(currentUser.role === 'admin') loadUsers();
         
-        // Display all customers when customer-profile tab is clicked
         displayAllCustomers();
-        
+        document.getElementById('statusBox').innerHTML = `✅ ${customers.length} customers loaded | Ready`;
         showNotification(`Welcome ${un}! ${customers.length} customers, ${products.length} products loaded.`);
     };
     
-    function logout(){ document.getElementById('posSystem').style.display = 'none'; document.getElementById('loginPage').style.display = 'flex'; currentUser = null; }
+    document.getElementById('refreshBtn').onclick = async() => {
+        if (!currentUser) return;
+        showNotification('Refreshing data...');
+        clearAllData();
+        await Promise.all([loadCustomers(), loadProducts(), loadTransactions(), loadInvestors(), loadSubscriptions(), loadInvestorAccount(), loadWhatsAppMessages()]);
+        displayAllCustomers();
+        renderProductCatalog();
+        renderTransactions();
+        renderSubscriptions();
+        renderInvestors();
+        renderWhatsAppMessages();
+        document.getElementById('statusBox').innerHTML = `✅ ${customers.length} customers loaded | Ready`;
+        showNotification(`✓ Refreshed! ${customers.length} customers, ${products.length} products loaded.`);
+    };
+    
+    function logout(){ document.getElementById('posSystem').style.display = 'none'; document.getElementById('loginPage').style.display = 'flex'; currentUser = null; clearAllData(); }
     document.getElementById('logoutBtn').onclick = logout;
     
     document.getElementById('saleCustomerSearch').addEventListener('input', e => { 
@@ -1273,11 +1327,9 @@
         await loadCustomers(); 
         showNotification('Customer created'); 
         document.getElementById('newCustomerName').value = ''; document.getElementById('newCustomerPhone').value = ''; document.getElementById('newCustomerEmail').value = ''; document.getElementById('newCustomerIdNumber').value = ''; 
-        // Refresh customer list
         displayAllCustomers();
     };
     
-    // Updated customer search input handler
     document.getElementById('customerSearchInput').addEventListener('input', e => { 
         let val = e.target.value; 
         searchCustomers(val);
@@ -1369,7 +1421,7 @@
     async function loadUsers(){ if(currentUser?.role !== 'admin') return; let {data} = await supabase.from('users').select('*'); document.getElementById('userList').innerHTML = data?.map(u => `<div class="compact-row">${u.username} (${u.role})${u.username !== currentUser.username ? `<button onclick="deleteUser('${u.username}')" class="delete-btn">Delete</button>` : ''}</div>`).join('') || '<div>No users</div>'; }
     window.deleteUser = async(un) => { if(confirm('Delete user?')){ await supabase.from('users').delete().eq('username', un); await loadUsers(); showNotification('User deleted'); } };
     
-    document.getElementById('printReceiptBtn').onclick = () => { let w = window.open(); w.document.write(`<pre style="font-family:monospace;padding:20px;">${document.getElementById('receiptContent').innerText}</pre>`); w.print(); };
+    document.getElementById('printReceiptBtn').onclick = () => { let w = window.open(); w.document.write(`<pre style="font-family:monospace;padding:20px;color:black;">${document.getElementById('receiptContent').innerText}</pre>`); w.print(); };
     document.getElementById('closeReceiptBtn').onclick = () => { document.getElementById('receiptModal').style.display = 'none'; };
     
     document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click', () => {
@@ -1383,13 +1435,15 @@
         else if(tabId === 'customer-profile') { 
             renderWhatsAppMessages(); 
             document.getElementById('customerViewDetails').style.display = 'none';
-            // Reset search input and show all customers
             document.getElementById('customerSearchInput').value = '';
             displayAllCustomers();
         }
         else if(tabId === 'search-product') renderProductCatalog();
         else if(tabId === 'payroll') { renderInvestors(); document.getElementById('payrollEmployeesSection').style.display = 'block'; document.getElementById('payrollRunSection').style.display = 'none'; document.getElementById('investorAccountSection').style.display = 'none'; }
         else if(tabId === 'admin-panel' && currentUser?.role === 'admin') { renderAdminProducts(); loadUsers(); }
+        
+        const tabBar = document.querySelector('.tab-bar');
+        if (tabBar) tabBar.classList.remove('active');
     }));
 
     function initHamburgerMenu() {
@@ -1415,9 +1469,7 @@
         }
     }
     
-    // Call the function
     initHamburgerMenu();
-    
     initSupabase();
 })();
 </script>
