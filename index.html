@@ -572,6 +572,8 @@
         giftedly: 'https://i.postimg.cc/tgrKrwwS/Whats-App-Image-2026-05-18-at-10-45-20-AM.jpg'
     };
     
+    let isReturningFromWhatsApp = false;
+    
     function showNotification(msg){ let n=document.getElementById('notification'); n.innerHTML=msg; n.style.display='block'; setTimeout(()=>n.style.display='none',3000);}
     
     function formatPhoneForWhatsApp(phone) {
@@ -582,15 +584,36 @@
     }
     
     function sendWhatsApp(phoneNumber, message) {
-        const whatsappUrl = `https://wa.me/${formatPhoneForWhatsApp(phoneNumber)}?text=${encodeURIComponent(message)}`;
-        window.open(whatsappUrl, '_blank');
+        const formattedPhone = formatPhoneForWhatsApp(phoneNumber);
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodedMessage}`;
+        isReturningFromWhatsApp = true;
+        window.location.href = whatsappUrl;
+        setTimeout(() => { isReturningFromWhatsApp = false; }, 2000);
+        showNotification('Opening WhatsApp...');
     }
+    
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted || isReturningFromWhatsApp) {
+            isReturningFromWhatsApp = false;
+            if (currentUser) {
+                setTimeout(() => {
+                    loadCustomers();
+                    loadProducts();
+                    loadTransactions();
+                    loadSubscriptions();
+                    if (document.getElementById('customer-profile').classList.contains('active')) {
+                        displayAllCustomers();
+                    }
+                }, 500);
+            }
+        }
+    });
     
     function getTableName(baseTable) {
         return `${baseTable}_${currentBusiness}`;
     }
     
-    // VIP Date Picker
     function showVipDatePicker(callback) {
         const overlay = document.createElement('div');
         overlay.className = 'alert-overlay';
@@ -853,7 +876,11 @@
             let today = new Date(), renewal = new Date();
             renewal.setMonth(renewal.getMonth() + 1);
             const tableName = getTableName('subscriptions');
-            await supabase.from(tableName).update({start_date: today.toISOString().split('T')[0], renewal_date: renewal.toISOString().split('T')[0], status: 'active'}).eq('id', id);
+            await supabase.from(tableName).update({ 
+                date_paid: today.toISOString().split('T')[0], 
+                renewal_date: renewal.toISOString().split('T')[0], 
+                status: 'active' 
+            }).eq('id', id);
             await loadSubscriptions();
             showNotification('Membership renewed');
         }
@@ -889,22 +916,21 @@
         let toDate = document.getElementById('vipDateTo')?.value;
         
         if(search) list = list.filter(s => s.customer_name.toLowerCase().includes(search));
-        if(fromDate) list = list.filter(s => new Date(s.start_date || s.date_paid) >= new Date(fromDate));
-        if(toDate) { let e = new Date(toDate); e.setHours(23,59,59); list = list.filter(s => new Date(s.start_date || s.date_paid) <= e); }
+        if(fromDate) list = list.filter(s => new Date(s.date_paid) >= new Date(fromDate));
+        if(toDate) { let e = new Date(toDate); e.setHours(23,59,59); list = list.filter(s => new Date(s.date_paid) <= e); }
         if(filter === 'active') list = list.filter(s => s.status !== 'unsubscribed' && new Date(s.renewal_date) >= new Date());
         else if(filter === 'overdue') list = list.filter(s => s.status !== 'unsubscribed' && new Date(s.renewal_date) < new Date());
         else if(filter === 'unsubscribed') list = list.filter(s => s.status === 'unsubscribed');
         
         document.getElementById('subscriptionList').innerHTML = list.map(s => {
             let isUnsubscribed = s.status === 'unsubscribed', isOverdue = !isUnsubscribed && new Date(s.renewal_date) < new Date(), needsReminderFlag = !isUnsubscribed && !isOverdue && needsReminder(s.renewal_date);
-            let startDateDisplay = s.start_date ? new Date(s.start_date).toLocaleDateString() : (s.date_paid ? new Date(s.date_paid).toLocaleDateString() : 'N/A');
+            let startDateDisplay = s.date_paid ? new Date(s.date_paid).toLocaleDateString() : 'N/A';
             return `<div class="subscription-item ${isUnsubscribed ? 'unsubscribed' : isOverdue ? 'overdue' : 'active'}"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;"><div><strong>${s.customer_name}</strong> | ${s.product_name} | R${s.amount}${needsReminderFlag ? '<span class="reminder-badge">🔔 Due in 2 days</span>' : ''}</div><div><span style="font-size:11px;">Start: ${startDateDisplay} | Renews: ${isUnsubscribed ? 'Cancelled' : new Date(s.renewal_date).toLocaleDateString()}</span>${needsReminderFlag ? `<button onclick="sendReminder(${s.id},'${s.customer_name}','${s.customer_phone}','${s.product_name}','${s.renewal_date}')" class="whatsapp-btn">📱 Remind</button>` : ''}${!isUnsubscribed ? `<button onclick="renewSubscription(${s.id})" class="renew-btn" style="background:var(--primary);color:white;">🔄 Renew</button>` : ''}${!isUnsubscribed ? `<button onclick="unsubscribeSubscription(${s.id})" class="unsubscribe-btn">❌ Unsubscribe</button>` : ''}<button onclick="delSub(${s.id})" class="delete-btn">🗑️ Delete</button></div></div></div>`;
         }).join('') || '<div>No subscriptions</div>';
     }
     
     window.sendReminder = function(subscriptionId, customerName, customerPhone, productName, renewalDate) {
         sendWhatsApp(customerPhone, `🔔 VIP REMINDER\n\nDear ${customerName},\n\nYour ${productName} VIP membership expires on ${new Date(renewalDate).toLocaleDateString()}.\n\nPlease renew to continue your benefits!\n\nThank you.`);
-        showNotification(`WhatsApp opened for ${customerName}`);
     };
     
     window.sendBulkReminders = function() {
@@ -918,7 +944,6 @@
     
     window.sendCustomerWhatsApp = function(customerName, customerPhone) {
         sendWhatsApp(customerPhone, `Hello ${customerName},\n\nHow can we assist you today?\n\nRegards,\n${currentBusiness === 'ultron' ? 'Ultron Trading' : 'Giftedly'}`);
-        showNotification(`Opening WhatsApp for ${customerName}`);
     };
     
     window.openBroadcastModal = function() {
@@ -1040,8 +1065,7 @@
         
         if(existing && confirm(`${customer.name} already has a VIP membership. Would you like to renew it instead?`)){
             const { error } = await supabase.from(tableName).update({ 
-                start_date: startDate, 
-                date_paid: startDate,
+                date_paid: startDate, 
                 renewal_date: renewalDate.toISOString().split('T')[0], 
                 status: 'active' 
             }).eq('id', existing.id);
@@ -1058,7 +1082,6 @@
                 customer_phone: customer.phone, 
                 product_name: product, 
                 amount: amount, 
-                start_date: startDate,
                 date_paid: startDate,
                 renewal_date: renewalDate.toISOString().split('T')[0], 
                 status: 'active', 
@@ -1153,19 +1176,19 @@
         document.querySelector('.method-btn[data-method="Cash"]')?.classList.add('active');
     }
     
-    // ============ LOAD WHATSAPP MESSAGES SAFELY ============
+    // WhatsApp messages - optional feature, won't break if tables don't exist
     async function loadWhatsAppMessages() {
         try {
             const tableName = getTableName('whatsapp_messages');
             const { data } = await supabase.from(tableName).select('*').order('created_at', { ascending: false });
-            if(data) { 
+            if(data && data.length > 0) { 
                 whatsappMessages = data; 
                 updateWhatsAppBadge(); 
                 renderWhatsAppMessages(); 
             }
         } catch(e) { 
-            // Table might not exist, just ignore
-            console.log('WhatsApp messages table not found yet');
+            // Table doesn't exist - that's fine
+            console.log('WhatsApp messages feature not available');
             whatsappMessages = [];
         }
     }
@@ -1185,15 +1208,19 @@
     }
     
     async function markMessageRead(messageId) {
-        const tableName = getTableName('whatsapp_messages');
-        await supabase.from(tableName).update({ read: true }).eq('id', messageId);
-        await loadWhatsAppMessages();
+        try {
+            const tableName = getTableName('whatsapp_messages');
+            await supabase.from(tableName).update({ read: true }).eq('id', messageId);
+            await loadWhatsAppMessages();
+        } catch(e) {}
     }
     
     async function deleteWhatsAppMessage(messageId) {
-        const tableName = getTableName('whatsapp_messages');
-        await supabase.from(tableName).delete().eq('id', messageId);
-        await loadWhatsAppMessages();
+        try {
+            const tableName = getTableName('whatsapp_messages');
+            await supabase.from(tableName).delete().eq('id', messageId);
+            await loadWhatsAppMessages();
+        } catch(e) {}
     }
     
     function updateWhatsAppBadge() {
@@ -1230,9 +1257,8 @@
     
     window.replyToWhatsApp = function(phone, name) {
         let message = prompt(`Reply to ${name}:`, "Thank you for your message! How can we assist you?");
-        if(message) { sendWhatsApp(phone, message); showNotification(`WhatsApp opened for ${name}`); }
+        if(message) { sendWhatsApp(phone, message); }
     };
-    // ============================================
     
     document.getElementById('loginBtn').onclick = async() => { 
         clearAllData();
@@ -1249,7 +1275,11 @@
         
         document.getElementById('statusBox').innerHTML = 'Loading data... <span class="loading-spinner"></span>';
         
-        await Promise.all([loadCustomers(), loadProducts(), loadTransactions(), loadInvestors(), loadSubscriptions(), loadInvestorAccount(), loadWhatsAppMessages()]);
+        await Promise.all([loadCustomers(), loadProducts(), loadTransactions(), loadInvestors(), loadSubscriptions(), loadInvestorAccount()]);
+        
+        // Try to load WhatsApp messages but don't wait for it
+        loadWhatsAppMessages().catch(e => console.log('WhatsApp messages not available'));
+        
         document.querySelectorAll('.admin-only').forEach(el => el.style.display = currentUser.role === 'admin' ? 'block' : 'none');
         document.querySelectorAll('.ultron-only-tab').forEach(el => el.style.display = business === 'ultron' ? 'block' : 'none');
         document.getElementById('userRoleDisplay').innerHTML = `👤 ${un} (${currentUser.role})`;
@@ -1260,26 +1290,30 @@
         if(currentUser.role === 'admin') loadUsers();
         
         displayAllCustomers();
-        document.getElementById('statusBox').innerHTML = `✅ ${customers.length} customers loaded | Ready`;
-        showNotification(`Welcome ${un}! ${customers.length} customers, ${products.length} products loaded.`);
+        document.getElementById('statusBox').innerHTML = `✅ ${customers.length} customers, ${products.length} products loaded`;
+        showNotification(`Welcome ${un}!`);
     };
     
     document.getElementById('refreshBtn').onclick = async() => {
         if (!currentUser) return;
         showNotification('Refreshing data...');
         clearAllData();
-        await Promise.all([loadCustomers(), loadProducts(), loadTransactions(), loadInvestors(), loadSubscriptions(), loadInvestorAccount(), loadWhatsAppMessages()]);
+        await Promise.all([loadCustomers(), loadProducts(), loadTransactions(), loadInvestors(), loadSubscriptions(), loadInvestorAccount()]);
         displayAllCustomers();
         renderProductCatalog();
         renderTransactions();
         renderSubscriptions();
         renderInvestors();
-        renderWhatsAppMessages();
-        document.getElementById('statusBox').innerHTML = `✅ ${customers.length} customers loaded | Ready`;
-        showNotification(`✓ Refreshed! ${customers.length} customers, ${products.length} products loaded.`);
+        document.getElementById('statusBox').innerHTML = `✅ ${customers.length} customers, ${products.length} products loaded`;
+        showNotification(`✓ Refreshed!`);
     };
     
-    function logout(){ document.getElementById('posSystem').style.display = 'none'; document.getElementById('loginPage').style.display = 'flex'; currentUser = null; clearAllData(); }
+    function logout(){ 
+        document.getElementById('posSystem').style.display = 'none'; 
+        document.getElementById('loginPage').style.display = 'flex'; 
+        currentUser = null; 
+        clearAllData(); 
+    }
     document.getElementById('logoutBtn').onclick = logout;
     
     document.getElementById('saleCustomerSearch').addEventListener('input', e => { 
@@ -1287,7 +1321,7 @@
         if(val.length < 2) { document.getElementById('saleCustomerResults').innerHTML = '<div>Type at least 2 characters...</div>'; return; }
         let f = customers.filter(c => c.name.toLowerCase().includes(val.toLowerCase()) || c.phone.includes(val)); 
         if(f.length === 0) {
-            document.getElementById('saleCustomerResults').innerHTML = '<div>No customers found. Try a different search or add a new customer.</div>';
+            document.getElementById('saleCustomerResults').innerHTML = '<div>No customers found.</div>';
         } else {
             document.getElementById('saleCustomerResults').innerHTML = f.map(c => `<div class="result-item" onclick="selectSaleCustomer('${c.phone}')"><strong>${c.name}</strong><br>📞 ${c.phone}</div>`).join('');
         }
@@ -1298,7 +1332,7 @@
         if(val.length < 2) { document.getElementById('saleProductResults').innerHTML = '<div>Type at least 2 characters...</div>'; return; }
         let f = products.filter(p => p.sku.toLowerCase().includes(val.toLowerCase()) || p.description.toLowerCase().includes(val.toLowerCase())); 
         if(f.length === 0) {
-            document.getElementById('saleProductResults').innerHTML = '<div>No products found. Add products in Admin panel.</div>';
+            document.getElementById('saleProductResults').innerHTML = '<div>No products found.</div>';
         } else {
             document.getElementById('saleProductResults').innerHTML = f.map(p => `<div class="result-item" onclick="addToCart('${p.sku}')"><strong>${p.sku}</strong> - ${p.description}<br>R${p.price_inc_vat.toFixed(2)}</div>`).join('');
         }
@@ -1445,7 +1479,7 @@
         const tabBar = document.querySelector('.tab-bar');
         if (tabBar) tabBar.classList.remove('active');
     }));
-
+    
     function initHamburgerMenu() {
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const tabBar = document.querySelector('.tab-bar');
